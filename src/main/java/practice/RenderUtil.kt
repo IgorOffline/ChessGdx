@@ -14,8 +14,8 @@ class RenderUtil {
 
     fun renderBoard(shapeRenderer: ShapeRenderer, spriteBatch: SpriteBatch) {
         shapeRenderer.projectionMatrix = spriteBatch.projectionMatrix
-        for (i in 0..8) {
-            for (j in 0..8) {
+        for (i in 0..7) {
+            for (j in 0..7) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled)
                 shapeRenderer.color = if (colorSwitch) ColorUtil.COLOR_1 else ColorUtil.COLOR_2
                 colorSwitch = !colorSwitch
@@ -23,13 +23,13 @@ class RenderUtil {
                 shapeRenderer.rect(xOffset + 50F * i.toFloat(), yOffset + 50F * j.toFloat(), 50F, 50F)
                 shapeRenderer.end()
             }
+            colorSwitch = !colorSwitch
         }
-        colorSwitch = !colorSwitch
     }
 
     fun renderFonts(spriteBatch: SpriteBatch, font: BitmapFont) {
-        for (i in 0..8) {
-            for (j in 0..8) {
+        for (i in 0..7) {
+            for (j in 0..7) {
                 spriteBatch.begin()
                 font.color = ColorUtil.COLOR_3
                 var drawx = xOffset + 50F * i.toFloat()
@@ -37,15 +37,16 @@ class RenderUtil {
                 drawx += 3F
                 drawy -= 3F
                 drawy += 50F
-                font.draw(spriteBatch, "A0", drawx, drawy)
+                val letterNumber = LetterNumber.getLetter(i) + LetterNumber.getNumber(j) // example: A0
+                font.draw(spriteBatch, letterNumber, drawx, drawy)
                 spriteBatch.end()
             }
         }
     }
 
     fun renderTextures(spriteBatch: SpriteBatch, texture: Texture) {
-        for (i in 0..8) {
-            for (j in 0..8) {
+        for (i in 0..7) {
+            for (j in 0..7) {
                 var drawx = xOffset + 50F * i.toFloat()
                 var drawy = yOffset + 50F * j.toFloat()
                 drawx += 8F
