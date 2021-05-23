@@ -2,13 +2,13 @@ package practice
 
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.ScreenUtils
+import practice.board.Board
 import practice.ui.Window
 
 class MyGdxGame : ApplicationAdapter() {
@@ -17,7 +17,8 @@ class MyGdxGame : ApplicationAdapter() {
     private var font12: BitmapFont? = null
     private var shapeRenderer: ShapeRenderer? = null
     private var renderUtil: RenderUtil? = null
-    private var texture: Texture? = null
+    private var textures: Textures? = null
+    private var board: Board? = null
 
     override fun create() {
 
@@ -32,15 +33,16 @@ class MyGdxGame : ApplicationAdapter() {
         shapeRenderer = ShapeRenderer()
         renderUtil = RenderUtil()
 
-        texture = Texture(Gdx.files.internal("icons/wK.png"))
+        textures = Textures()
+        board = Board()
     }
 
     override fun render() {
         ScreenUtils.clear(0F, 0F, 0.2F, 1F)
 
-        renderUtil!!.renderBoard(shapeRenderer!!, spriteBatch!!)
+        renderUtil!!.renderLettersNumbers(shapeRenderer!!, spriteBatch!!)
         renderUtil!!.renderFonts(spriteBatch!!, font12!!)
-        renderUtil!!.renderTextures(spriteBatch!!, texture!!)
+        renderUtil!!.renderBoard(spriteBatch!!, board!!, textures!!)
 
         spriteBatch!!.begin()
         font12!!.draw(spriteBatch, "Hello, World!", 15F, Window.FIXED_HEIGHT - 15F)
@@ -50,7 +52,7 @@ class MyGdxGame : ApplicationAdapter() {
     override fun dispose() {
         spriteBatch!!.dispose()
         shapeRenderer!!.dispose()
-        texture!!.dispose()
+        textures!!.dispose()
     }
 
     override fun resize(width: Int, height: Int) {

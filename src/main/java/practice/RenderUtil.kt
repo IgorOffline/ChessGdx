@@ -1,9 +1,11 @@
 package practice
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import practice.board.Board
+import practice.board.ui.LetterNumber
+import practice.ui.ColorUtil
 
 class RenderUtil {
 
@@ -12,7 +14,7 @@ class RenderUtil {
     private val yOffset = 125F
     private val textureSize = 34F
 
-    fun renderBoard(shapeRenderer: ShapeRenderer, spriteBatch: SpriteBatch) {
+    fun renderLettersNumbers(shapeRenderer: ShapeRenderer, spriteBatch: SpriteBatch) {
         shapeRenderer.projectionMatrix = spriteBatch.projectionMatrix
         for (i in 0..7) {
             for (j in 0..7) {
@@ -44,18 +46,26 @@ class RenderUtil {
         }
     }
 
-    fun renderTextures(spriteBatch: SpriteBatch, texture: Texture) {
+    fun renderBoard(spriteBatch: SpriteBatch, board: Board, textures: Textures) {
         for (i in 0..7) {
             for (j in 0..7) {
-                var drawx = xOffset + 50F * i.toFloat()
-                var drawy = yOffset + 50F * j.toFloat()
-                drawx += 8F
-                drawy -= 8F
-                drawy += 16F
-                spriteBatch.begin()
-                spriteBatch.draw(texture, drawx, drawy, textureSize, textureSize)
-                spriteBatch.end()
+                for (square in board.board) {
+                    if (board.squareFound(i, j, square)) {
+                        boardRendering(i, j, spriteBatch, textures)
+                    }
+                }
             }
         }
+    }
+
+    private fun boardRendering(i: Int, j: Int, spriteBatch: SpriteBatch, textures: Textures) {
+        var drawx = xOffset + 50F * i.toFloat()
+        var drawy = yOffset + 50F * j.toFloat()
+        drawx += 8F
+        drawy -= 8F
+        drawy += 16F
+        spriteBatch.begin()
+        spriteBatch.draw(textures.txWK, drawx, drawy, textureSize, textureSize)
+        spriteBatch.end()
     }
 }

@@ -1,4 +1,4 @@
-package practice
+package practice.board.ui
 
 import java.lang.IllegalArgumentException
 

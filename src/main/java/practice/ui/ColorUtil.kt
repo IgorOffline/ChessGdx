@@ -1,4 +1,4 @@
-package practice
+package practice.ui
 
 import com.badlogic.gdx.graphics.Color
 
