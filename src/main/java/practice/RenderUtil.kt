@@ -1,11 +1,16 @@
 package practice
 
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import practice.board.Board
+import practice.board.Piece
+import practice.board.PieceColor
+import practice.board.Square
 import practice.board.ui.LetterNumber
 import practice.ui.ColorUtil
+import java.lang.IllegalArgumentException
 
 class RenderUtil {
 
@@ -51,21 +56,42 @@ class RenderUtil {
             for (j in 0..7) {
                 for (square in board.board) {
                     if (board.squareFound(i, j, square)) {
-                        boardRendering(i, j, spriteBatch, textures)
+                        boardRendering(i, j, square, spriteBatch, textures)
                     }
                 }
             }
         }
     }
 
-    private fun boardRendering(i: Int, j: Int, spriteBatch: SpriteBatch, textures: Textures) {
+    private fun boardRendering(i: Int, j: Int, square: Square, spriteBatch: SpriteBatch, textures: Textures) {
         var drawx = xOffset + 50F * i.toFloat()
         var drawy = yOffset + 50F * j.toFloat()
         drawx += 8F
         drawy -= 8F
         drawy += 16F
         spriteBatch.begin()
-        spriteBatch.draw(textures.txWK, drawx, drawy, textureSize, textureSize)
+        val texture = findTextureForSquare(square, textures)
+        spriteBatch.draw(texture, drawx, drawy, textureSize, textureSize)
         spriteBatch.end()
+    }
+
+    private fun findTextureForSquare(square: Square, textures: Textures): Texture {
+        when (square.pieceColor) {
+            PieceColor.WHITE -> {
+                return when (square.piece) {
+                    Piece.NONE -> throw IllegalArgumentException("Unknown White Piece")
+                    Piece.KING -> textures.txWK!!
+                }
+            }
+            PieceColor.BLACK -> {
+                return when (square.piece) {
+                    Piece.NONE -> throw IllegalArgumentException("Unknown White Piece")
+                    Piece.KING -> textures.txBK!!
+                }
+            }
+            else -> {
+                throw IllegalArgumentException("Unknown Piece Color")
+            }
+        }
     }
 }
