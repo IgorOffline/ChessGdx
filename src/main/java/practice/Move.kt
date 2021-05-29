@@ -15,11 +15,10 @@ class Move {
                     val xBetween = Gdx.input.x > clickable[i].head && Gdx.input.x < clickable[i + 1].head
                     val yBetween = Gdx.input.y > clickable[i].body[j] && Gdx.input.y < clickable[i].body[j + 1]
                     if (xBetween && yBetween) {
-                        println("yBetween, $i, $j")
+                        println("$i, $j")
                     }
                 }
             }
-            println("---")
         }
     }
 
