@@ -42,7 +42,7 @@ class MyGdxGame : ApplicationAdapter() {
     override fun render() {
         ScreenUtils.clear(0F, 0F, 0.2F, 1F)
 
-        move!!.move()
+        move!!.move(board!!)
 
         renderUtil!!.renderLettersNumbers(shapeRenderer!!, spriteBatch!!)
         renderUtil!!.renderFonts(spriteBatch!!, font12!!)

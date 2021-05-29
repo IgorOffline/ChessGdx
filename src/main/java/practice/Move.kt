@@ -2,7 +2,11 @@ package practice
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
+import practice.board.Board
 import practice.board.Heading
+import practice.board.Piece
+import practice.board.Square
+import practice.board.ui.LetterNumber
 
 class Move {
 
@@ -26,17 +30,34 @@ class Move {
         }
     }
 
-    fun move() {
+    fun move(board: Board) {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             for (i in 0..7) {
                 for (j in 0..7) {
-                    val xBetween = Gdx.input.x > clickable[i].head && Gdx.input.x < clickable[i + 1].head
-                    val yBetween = Gdx.input.y > clickable[i].body[j] && Gdx.input.y < clickable[i].body[j + 1]
-                    if (xBetween && yBetween) {
-                        println("$i, $j")
-                    }
+                    moveLogic(i, j, board)
                 }
             }
+        }
+    }
+
+    private fun moveLogic(i: Int, j: Int, board: Board) {
+        val xBetween = Gdx.input.x > clickable[i].head && Gdx.input.x < clickable[i + 1].head
+        val yBetween = Gdx.input.y > clickable[i].body[j] && Gdx.input.y < clickable[i].body[j + 1]
+        if (xBetween && yBetween) {
+            for (square in board.board) {
+                between(i, j, square)
+            }
+        }
+    }
+
+    private fun between(i: Int, j: Int, square: Square) {
+        val letter = LetterNumber.getLetterEnum(i)
+        val number = LetterNumber.getNumberEnumReverse(j)
+        val letterOk = square.letter == letter
+        val numberOk = square.number == number
+        val squareFilled = square.piece != Piece.NONE
+        if (letterOk && numberOk && squareFilled) {
+            println("$letter$number ${square.pieceColor} ${square.piece}")
         }
     }
 }
