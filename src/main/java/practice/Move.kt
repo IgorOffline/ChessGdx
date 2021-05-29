@@ -6,10 +6,28 @@ import practice.board.Heading
 
 class Move {
 
+    private val clickable = mutableListOf<Heading>()
+
+    init {
+        fillClickable(clickable)
+    }
+
+    private fun fillClickable(clickable: MutableList<Heading>) {
+        for (i in 0..8) {
+            var drawx = RenderUtil.X_OFFSET + 50F * i.toFloat()
+            drawx += 8F
+            clickable.add(Heading(drawx.toInt(), mutableListOf()))
+            for (j in 1..9) {
+                var drawy = RenderUtil.Y_OFFSET + 50F * j.toFloat()
+                drawy -= 8F
+                drawy += 16F
+                clickable[i].body.add(drawy.toInt())
+            }
+        }
+    }
+
     fun move() {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            val clickable = mutableListOf<Heading>()
-            fillClickable(clickable)
             for (i in 0..7) {
                 for (j in 0..7) {
                     val xBetween = Gdx.input.x > clickable[i].head && Gdx.input.x < clickable[i + 1].head
@@ -18,21 +36,6 @@ class Move {
                         println("$i, $j")
                     }
                 }
-            }
-        }
-    }
-
-    private fun fillClickable(clickable: MutableList<Heading>) {
-        for (i in 0..8) {
-            var drawx = RenderUtil.X_OFFSET + 50F * i.toFloat()
-            drawx += 8F
-            clickable.add(Heading(drawx.toInt(), mutableListOf()))
-            val body = mutableListOf<Int>()
-            for (j in 1..9) {
-                var drawy = RenderUtil.Y_OFFSET + 50F * j.toFloat()
-                drawy -= 8F
-                drawy += 16F
-                clickable[i].body.add(drawy.toInt())
             }
         }
     }
