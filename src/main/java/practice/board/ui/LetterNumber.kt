@@ -1,5 +1,6 @@
 package practice.board.ui
 
+import practice.Messages
 import java.lang.IllegalArgumentException
 
 class LetterNumber {
@@ -14,7 +15,7 @@ class LetterNumber {
                 5 -> "F"
                 6 -> "G"
                 7 -> "H"
-                else -> throw IllegalArgumentException("Unknown letter")
+                else -> throw IllegalArgumentException(Messages.UNKNOWN_LETTER)
             }
         }
         fun getNumber(number: Int): String {
@@ -27,7 +28,7 @@ class LetterNumber {
                 5 -> "6"
                 6 -> "7"
                 7 -> "8"
-                else -> throw IllegalArgumentException("Unknown number")
+                else -> throw IllegalArgumentException(Messages.UNKNOWN_NUMBER)
             }
         }
     }

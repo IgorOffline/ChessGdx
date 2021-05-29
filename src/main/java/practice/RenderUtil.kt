@@ -84,21 +84,21 @@ class RenderUtil {
                 blackPieces(square, textures)
             }
             else -> {
-                throw IllegalArgumentException("Unknown Piece Color")
+                throw IllegalArgumentException(Messages.UNKNOWN_PIECE_COLOR)
             }
         }
     }
 
     private fun whitePieces(square: Square, textures: Textures): Texture {
         return when (square.piece) {
-            Piece.NONE -> throw IllegalArgumentException("Unknown White Piece")
+            Piece.NONE -> throw IllegalArgumentException(Messages.UNKNOWN_WHITE_PIECE)
             Piece.KING -> textures.txWK!!
         }
     }
 
     private fun blackPieces(square: Square, textures: Textures): Texture {
         return when (square.piece) {
-            Piece.NONE -> throw IllegalArgumentException("Unknown Black Piece")
+            Piece.NONE -> throw IllegalArgumentException(Messages.UNKNOWN_BLACK_PIECE)
             Piece.KING -> textures.txBK!!
         }
     }
