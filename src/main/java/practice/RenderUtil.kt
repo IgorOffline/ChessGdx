@@ -76,22 +76,30 @@ class RenderUtil {
     }
 
     private fun findTextureForSquare(square: Square, textures: Textures): Texture {
-        when (square.pieceColor) {
+        return when (square.pieceColor) {
             PieceColor.WHITE -> {
-                return when (square.piece) {
-                    Piece.NONE -> throw IllegalArgumentException("Unknown White Piece")
-                    Piece.KING -> textures.txWK!!
-                }
+                whitePieces(square, textures)
             }
             PieceColor.BLACK -> {
-                return when (square.piece) {
-                    Piece.NONE -> throw IllegalArgumentException("Unknown White Piece")
-                    Piece.KING -> textures.txBK!!
-                }
+                blackPieces(square, textures)
             }
             else -> {
                 throw IllegalArgumentException("Unknown Piece Color")
             }
+        }
+    }
+
+    private fun whitePieces(square: Square, textures: Textures): Texture {
+        return when (square.piece) {
+            Piece.NONE -> throw IllegalArgumentException("Unknown White Piece")
+            Piece.KING -> textures.txWK!!
+        }
+    }
+
+    private fun blackPieces(square: Square, textures: Textures): Texture {
+        return when (square.piece) {
+            Piece.NONE -> throw IllegalArgumentException("Unknown Black Piece")
+            Piece.KING -> textures.txBK!!
         }
     }
 }
