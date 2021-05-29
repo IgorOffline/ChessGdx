@@ -13,10 +13,12 @@ import practice.ui.ColorUtil
 import java.lang.IllegalArgumentException
 
 class RenderUtil {
+    companion object {
+        const val X_OFFSET = 125F
+        const val Y_OFFSET = 125F
+    }
 
     private var colorSwitch = false
-    private val xOffset = 125F
-    private val yOffset = 125F
     private val textureSize = 34F
 
     fun renderLettersNumbers(shapeRenderer: ShapeRenderer, spriteBatch: SpriteBatch) {
@@ -27,7 +29,7 @@ class RenderUtil {
                 shapeRenderer.color = if (colorSwitch) ColorUtil.COLOR_1 else ColorUtil.COLOR_2
                 colorSwitch = !colorSwitch
 
-                shapeRenderer.rect(xOffset + 50F * i.toFloat(), yOffset + 50F * j.toFloat(), 50F, 50F)
+                shapeRenderer.rect(X_OFFSET + 50F * i.toFloat(), Y_OFFSET + 50F * j.toFloat(), 50F, 50F)
                 shapeRenderer.end()
             }
             colorSwitch = !colorSwitch
@@ -39,8 +41,8 @@ class RenderUtil {
             for (j in 0..7) {
                 spriteBatch.begin()
                 font.color = ColorUtil.COLOR_3
-                var drawx = xOffset + 50F * i.toFloat()
-                var drawy = yOffset + 50F * j.toFloat()
+                var drawx = X_OFFSET + 50F * i.toFloat()
+                var drawy = Y_OFFSET + 50F * j.toFloat()
                 drawx += 3F
                 drawy -= 3F
                 drawy += 50F
@@ -64,8 +66,8 @@ class RenderUtil {
     }
 
     private fun boardRendering(i: Int, j: Int, square: Square, spriteBatch: SpriteBatch, textures: Textures) {
-        var drawx = xOffset + 50F * i.toFloat()
-        var drawy = yOffset + 50F * j.toFloat()
+        var drawx = X_OFFSET + 50F * i.toFloat()
+        var drawy = Y_OFFSET + 50F * j.toFloat()
         drawx += 8F
         drawy -= 8F
         drawy += 16F
