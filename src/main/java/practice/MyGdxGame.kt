@@ -19,7 +19,7 @@ class MyGdxGame : ApplicationAdapter() {
     private var renderUtil: RenderUtil? = null
     private var textures: Textures? = null
     private var board: Board? = null
-    private var move: Move? = null
+    private var myClickListener: MyClickListener? = null
 
     override fun create() {
 
@@ -36,13 +36,13 @@ class MyGdxGame : ApplicationAdapter() {
 
         textures = Textures()
         board = Board()
-        move = Move()
+        myClickListener = MyClickListener(board!!)
+
+        Gdx.input.inputProcessor = myClickListener
     }
 
     override fun render() {
         ScreenUtils.clear(0F, 0F, 0.2F, 1F)
-
-        move!!.move(board!!)
 
         renderUtil!!.renderLettersNumbers(shapeRenderer!!, spriteBatch!!)
         renderUtil!!.renderFonts(spriteBatch!!, font12!!)
