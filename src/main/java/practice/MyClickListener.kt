@@ -12,8 +12,8 @@ import practice.board.ui.LetterNumber
 
 class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
 
-    var dragDrop = 0L
-    var lastDragDrop = 0L
+    private var dragDrop = 0L
+    private var lastDragDrop = 0L
 
     private val clickable = mutableListOf<Heading>()
 
@@ -37,21 +37,25 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (button == Input.Buttons.LEFT) {
-            for (i in 0..7) {
-                for (j in 0..7) {
-                    moveLogic(i, j, board)
-                }
-            }
+            onTouch()
         }
         return true
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (lastDragDrop < dragDrop) {
-            println("$screenX $screenY")
+            onTouch()
         }
         lastDragDrop = dragDrop
         return true
+    }
+
+    private fun onTouch() {
+        for (i in 0..7) {
+            for (j in 0..7) {
+                moveLogic(i, j)
+            }
+        }
     }
 
     override fun touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean {
@@ -59,7 +63,7 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         return true
     }
 
-    private fun moveLogic(i: Int, j: Int, board: Board) {
+    private fun moveLogic(i: Int, j: Int) {
         val xBetween = Gdx.input.x > clickable[i].head && Gdx.input.x < clickable[i + 1].head
         val yBetween = Gdx.input.y > clickable[i].body[j] && Gdx.input.y < clickable[i].body[j + 1]
         if (xBetween && yBetween) {
@@ -77,6 +81,8 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         val squareFilled = square.piece != Piece.NONE
         if (letterOk && numberOk && squareFilled) {
             println("$letter$number ${square.pieceColor} ${square.piece}")
+        } else if (letterOk && numberOk && !squareFilled) {
+            println("$letter$number empty")
         }
     }
 

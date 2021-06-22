@@ -71,13 +71,15 @@ class RenderUtil {
         drawx += 8F
         drawy -= 8F
         drawy += 16F
-        spriteBatch.begin()
         val texture = findTextureForSquare(square, textures)
-        spriteBatch.draw(texture, drawx, drawy, textureSize, textureSize)
-        spriteBatch.end()
+        texture?.let {
+            spriteBatch.begin()
+            spriteBatch.draw(texture, drawx, drawy, textureSize, textureSize)
+            spriteBatch.end()
+        }
     }
 
-    private fun findTextureForSquare(square: Square, textures: Textures): Texture {
+    private fun findTextureForSquare(square: Square, textures: Textures): Texture? {
         return when (square.pieceColor) {
             PieceColor.WHITE -> {
                 whitePieces(square, textures)
@@ -86,7 +88,7 @@ class RenderUtil {
                 blackPieces(square, textures)
             }
             else -> {
-                throw IllegalArgumentException(Messages.UNKNOWN_PIECE_COLOR)
+                return null
             }
         }
     }
