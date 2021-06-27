@@ -17,6 +17,11 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
 
     private val clickable = mutableListOf<Heading>()
 
+    var fromSquare: Square? = null
+        private set
+    var toSquare: Square? = null
+        private set
+
     init {
         fillClickable(clickable)
     }
@@ -37,23 +42,23 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
 
     override fun touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (button == Input.Buttons.LEFT) {
-            onTouch()
+            onTouch(false)
         }
         return true
     }
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
         if (lastDragDrop < dragDrop) {
-            onTouch()
+            onTouch(true)
         }
         lastDragDrop = dragDrop
         return true
     }
 
-    private fun onTouch() {
+    private fun onTouch(moveToSquare: Boolean) {
         for (i in 0..7) {
             for (j in 0..7) {
-                moveLogic(i, j)
+                moveLogic(i, j, moveToSquare)
             }
         }
     }
@@ -63,26 +68,36 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         return true
     }
 
-    private fun moveLogic(i: Int, j: Int) {
+    private fun moveLogic(i: Int, j: Int, moveToSquare: Boolean) {
         val xBetween = Gdx.input.x > clickable[i].head && Gdx.input.x < clickable[i + 1].head
         val yBetween = Gdx.input.y > clickable[i].body[j] && Gdx.input.y < clickable[i].body[j + 1]
         if (xBetween && yBetween) {
             for (square in board.board) {
-                between(i, j, square)
+                between(i, j, square, moveToSquare)
             }
         }
     }
 
-    private fun between(i: Int, j: Int, square: Square) {
+    private fun between(i: Int, j: Int, square: Square, moveToSquare: Boolean) {
         val letter = LetterNumber.getLetterEnum(i)
         val number = LetterNumber.getNumberEnumReverse(j)
         val letterOk = square.letter == letter
         val numberOk = square.number == number
         val squareFilled = square.piece != Piece.NONE
         if (letterOk && numberOk && squareFilled) {
-            println("$letter$number ${square.pieceColor} ${square.piece}")
+            //println("$letter$number ${square.pieceColor} ${square.piece}")
+            if (moveToSquare) {
+                toSquare = square
+            } else {
+                fromSquare = square
+            }
         } else if (letterOk && numberOk && !squareFilled) {
-            println("$letter$number empty")
+            //println("$letter$number empty")
+            if (moveToSquare) {
+                toSquare = square
+            } else {
+                fromSquare = square
+            }
         }
     }
 

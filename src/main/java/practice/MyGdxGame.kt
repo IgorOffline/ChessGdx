@@ -48,9 +48,30 @@ class MyGdxGame : ApplicationAdapter() {
         renderUtil!!.renderFonts(spriteBatch!!, font12!!)
         renderUtil!!.renderBoard(spriteBatch!!, board!!, textures!!)
 
-        spriteBatch!!.begin()
-        font12!!.draw(spriteBatch, "Hello, World!", 15F, Window.FIXED_HEIGHT - 15F)
-        spriteBatch!!.end()
+        if (myClickListener!!.fromSquare != null && myClickListener!!.toSquare != null) {
+
+            val fromToString = fromToString()
+
+            spriteBatch!!.begin()
+            font12!!.draw(spriteBatch, fromToString, 15F, Window.FIXED_HEIGHT - 15F)
+            spriteBatch!!.end()
+        }
+    }
+
+    private fun fromToString(): String {
+        return myClickListener!!.fromSquare!!.letter.toString() +
+                myClickListener!!.fromSquare!!.number.toString() +
+                " " +
+                myClickListener!!.fromSquare!!.piece.toString() +
+                " " +
+                myClickListener!!.fromSquare!!.pieceColor.toString() +
+                " -> " +
+                myClickListener!!.toSquare!!.letter.toString() +
+                myClickListener!!.toSquare!!.number.toString() +
+                " " +
+                myClickListener!!.toSquare!!.piece.toString() +
+                " " +
+                myClickListener!!.toSquare!!.pieceColor.toString()
     }
 
     override fun dispose() {
