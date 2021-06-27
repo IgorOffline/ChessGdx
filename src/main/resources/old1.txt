@@ -1,0 +1,19 @@
+*
+val squareFilled = square.piece != Piece.NONE
+*
+        if (letterOk && numberOk && squareFilled) {
+            //println("$letter$number ${square.pieceColor} ${square.piece}")
+            if (moveToSquare) {
+                toSquare = square
+            } else {
+                fromSquare = square
+            }
+        } else if (letterOk && numberOk && !squareFilled) {
+            //println("$letter$number empty")
+            if (moveToSquare) {
+                toSquare = square
+            } else {
+                fromSquare = square
+            }
+        }
+*

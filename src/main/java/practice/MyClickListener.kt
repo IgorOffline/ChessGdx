@@ -4,10 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
-import practice.board.Board
-import practice.board.Heading
-import practice.board.Piece
-import practice.board.Square
+import practice.board.*
 import practice.board.ui.LetterNumber
 
 class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
@@ -83,18 +80,13 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         val number = LetterNumber.getNumberEnumReverse(j)
         val letterOk = square.letter == letter
         val numberOk = square.number == number
-        val squareFilled = square.piece != Piece.NONE
-        if (letterOk && numberOk && squareFilled) {
-            //println("$letter$number ${square.pieceColor} ${square.piece}")
+        if (letterOk && numberOk) {
             if (moveToSquare) {
                 toSquare = square
-            } else {
-                fromSquare = square
-            }
-        } else if (letterOk && numberOk && !squareFilled) {
-            //println("$letter$number empty")
-            if (moveToSquare) {
-                toSquare = square
+                toSquare!!.piece = fromSquare!!.piece
+                toSquare!!.pieceColor = fromSquare!!.pieceColor
+                fromSquare!!.piece = Piece.NONE
+                fromSquare!!.pieceColor = PieceColor.NONE
             } else {
                 fromSquare = square
             }
