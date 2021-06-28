@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputProcessor
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import practice.board.*
+import practice.board.Number
 import practice.board.ui.LetterNumber
 
 class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
@@ -83,14 +84,43 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         if (letterOk && numberOk) {
             if (moveToSquare) {
                 toSquare = square
-                toSquare!!.piece = fromSquare!!.piece
-                toSquare!!.pieceColor = fromSquare!!.pieceColor
-                fromSquare!!.piece = Piece.NONE
-                fromSquare!!.pieceColor = PieceColor.NONE
+                if (squareLegal(letter, number)) {
+                    toSquare!!.piece = fromSquare!!.piece
+                    toSquare!!.pieceColor = fromSquare!!.pieceColor
+                    fromSquare!!.piece = Piece.NONE
+                    fromSquare!!.pieceColor = PieceColor.NONE
+                }
             } else {
                 fromSquare = square
             }
         }
+    }
+
+    private fun squareLegal(letter: Letter, number: Number): Boolean {
+        if (!(fromSquare!!.piece == Piece.KING && fromSquare!!.pieceColor == PieceColor.WHITE)) {
+            return false
+        }
+
+        if (letter.index >= 0) {
+            val letterIndexMinus = fromSquare!!.letter.index - 1
+            val numberIndexPlus = fromSquare!!.number.index + 1
+            val numberIndexMinus = fromSquare!!.number.index - 1
+
+            val letterMinus = LetterNumber.getLetterEnum(letterIndexMinus)
+            val number = fromSquare!!.number
+            val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
+            val numberMinus = LetterNumber.getNumberEnum(numberIndexMinus)
+
+            val equal1 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, number)
+            val equal2 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberPlus)
+            val equal3 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberMinus)
+
+            if (equal1 || equal2 || equal3) {
+                return true
+            }
+        }
+
+        return false
     }
 
     override fun keyDown(keycode: Int): Boolean {
