@@ -101,23 +101,31 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
             return false
         }
 
-        if (letter.index >= 0) {
-            val letterIndexMinus = fromSquare!!.letter.index - 1
-            val numberIndexPlus = fromSquare!!.number.index + 1
-            val numberIndexMinus = fromSquare!!.number.index - 1
+        val letterIndexMinus = fromSquare!!.letter.index - 1
+        val letterIndexPlus = fromSquare!!.letter.index + 1
+        val numberIndexPlus = fromSquare!!.number.index + 1
+        val numberIndexMinus = fromSquare!!.number.index - 1
 
-            val letterMinus = LetterNumber.getLetterEnum(letterIndexMinus)
-            val number = fromSquare!!.number
-            val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
-            val numberMinus = LetterNumber.getNumberEnum(numberIndexMinus)
+        val letter = fromSquare!!.letter
+        val letterMinus = LetterNumber.getLetterEnum(letterIndexMinus)
+        val letterPlus = LetterNumber.getLetterEnum(letterIndexPlus)
+        val number = fromSquare!!.number
+        val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
+        val numberMinus = LetterNumber.getNumberEnum(numberIndexMinus)
 
-            val equal1 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, number)
-            val equal2 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberPlus)
-            val equal3 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberMinus)
+        val equal1 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, number)
+        val equal2 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberPlus)
+        val equal3 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberMinus)
 
-            if (equal1 || equal2 || equal3) {
-                return true
-            }
+        val equal4 = Square.letterNumberEqual(toSquare!!.letter, letterPlus, toSquare!!.number, number)
+        val equal5 = Square.letterNumberEqual(toSquare!!.letter, letterPlus, toSquare!!.number, numberPlus)
+        val equal6 = Square.letterNumberEqual(toSquare!!.letter, letterPlus, toSquare!!.number, numberMinus)
+
+        val equalTop = Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, numberPlus)
+        val equalBottom = Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, numberMinus)
+
+        if (equal1 || equal2 || equal3 || equal4 || equal5 || equal6 || equalTop || equalBottom) {
+            return true
         }
 
         return false
