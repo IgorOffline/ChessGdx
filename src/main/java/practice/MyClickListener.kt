@@ -84,7 +84,7 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         if (letterOk && numberOk) {
             if (moveToSquare) {
                 toSquare = square
-                if (squareLegal(letter, number)) {
+                if (squareLegal()) {
                     toSquare!!.piece = fromSquare!!.piece
                     toSquare!!.pieceColor = fromSquare!!.pieceColor
                     fromSquare!!.piece = Piece.NONE
@@ -96,39 +96,44 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         }
     }
 
-    private fun squareLegal(letter: Letter, number: Number): Boolean {
+    private fun squareLegal(): Boolean {
         if (!(fromSquare!!.piece == Piece.KING && fromSquare!!.pieceColor == PieceColor.WHITE)) {
             return false
         }
 
         val letterIndexMinus = fromSquare!!.letter.index - 1
         val letterIndexPlus = fromSquare!!.letter.index + 1
-        val numberIndexPlus = fromSquare!!.number.index + 1
         val numberIndexMinus = fromSquare!!.number.index - 1
+        val numberIndexPlus = fromSquare!!.number.index + 1
 
         val letter = fromSquare!!.letter
         val letterMinus = LetterNumber.getLetterEnum(letterIndexMinus)
         val letterPlus = LetterNumber.getLetterEnum(letterIndexPlus)
         val number = fromSquare!!.number
-        val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
         val numberMinus = LetterNumber.getNumberEnum(numberIndexMinus)
+        val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
 
-        val equal1 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, number)
-        val equal2 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberPlus)
-        val equal3 = Square.letterNumberEqual(toSquare!!.letter, letterMinus, toSquare!!.number, numberMinus)
+        val equal1 = equalLetterNumber(letterMinus, number)
+        val equal2 = equalLetterNumber(letterMinus, numberPlus)
+        val equal3 = equalLetterNumber(letterMinus, numberMinus)
 
-        val equal4 = Square.letterNumberEqual(toSquare!!.letter, letterPlus, toSquare!!.number, number)
-        val equal5 = Square.letterNumberEqual(toSquare!!.letter, letterPlus, toSquare!!.number, numberPlus)
-        val equal6 = Square.letterNumberEqual(toSquare!!.letter, letterPlus, toSquare!!.number, numberMinus)
+        val equal4 = equalLetterNumber(letterPlus, number)
+        val equal5 = equalLetterNumber(letterPlus, numberPlus)
+        val equal6 = equalLetterNumber(letterPlus, numberMinus)
 
-        val equalTop = Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, numberPlus)
-        val equalBottom = Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, numberMinus)
+        val equalTop = equalLetterNumber(letter, numberPlus)
+        val equalBottom = equalLetterNumber(letter, numberMinus)
 
         if (equal1 || equal2 || equal3 || equal4 || equal5 || equal6 || equalTop || equalBottom) {
             return true
         }
 
         return false
+    }
+
+    private fun equalLetterNumber(letter: Letter, number: Number) : Boolean {
+        val equal = Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, number)
+        return equal
     }
 
     override fun keyDown(keycode: Int): Boolean {
