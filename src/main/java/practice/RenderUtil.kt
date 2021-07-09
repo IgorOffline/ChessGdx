@@ -10,6 +10,7 @@ import practice.board.PieceColor
 import practice.board.Square
 import practice.board.ui.LetterNumber
 import practice.ui.ColorUtil
+import practice.ui.Window
 import java.lang.IllegalArgumentException
 
 class RenderUtil {
@@ -105,5 +106,12 @@ class RenderUtil {
             Piece.NONE -> throw IllegalArgumentException(Messages.UNKNOWN_BLACK_PIECE)
             Piece.KING -> textures.txBK!!
         }
+    }
+
+    fun renderSideToMove(spriteBatch: SpriteBatch, gameMaster: GameMaster, textures: Textures) {
+        spriteBatch.begin()
+        val texture = if (gameMaster.whiteToMove) textures.txWK!! else textures.txBK!!
+        spriteBatch.draw(texture, 16F, Window.FIXED_HEIGHT - 65F, textureSize, textureSize)
+        spriteBatch.end()
     }
 }

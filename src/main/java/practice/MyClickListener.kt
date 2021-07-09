@@ -8,17 +8,12 @@ import practice.board.*
 import practice.board.Number
 import practice.board.ui.LetterNumber
 
-class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
+class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListener(), InputProcessor {
 
     private var dragDrop = 0L
     private var lastDragDrop = 0L
 
     private val clickable = mutableListOf<Heading>()
-
-    var fromSquare: Square? = null
-        private set
-    var toSquare: Square? = null
-        private set
 
     init {
         fillClickable(clickable)
@@ -83,27 +78,31 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         val numberOk = square.number == number
         if (letterOk && numberOk) {
             if (moveToSquare) {
-                toSquare = square
+                gameMaster.toSquare = square
                 if (squareMoveable()) {
                     if (squareLegal()) {
-                        toSquare!!.piece = fromSquare!!.piece
-                        toSquare!!.pieceColor = fromSquare!!.pieceColor
-                        fromSquare!!.piece = Piece.NONE
-                        fromSquare!!.pieceColor = PieceColor.NONE
+                        gameMaster.toSquare!!.piece = gameMaster.fromSquare!!.piece
+                        gameMaster.toSquare!!.pieceColor = gameMaster.fromSquare!!.pieceColor
+                        gameMaster.fromSquare!!.piece = Piece.NONE
+                        gameMaster.fromSquare!!.pieceColor = PieceColor.NONE
+
+                        gameMaster.whiteToMove = !gameMaster.whiteToMove
                     }
                 }
             } else {
-                fromSquare = square
+                gameMaster.fromSquare = square
             }
         }
     }
 
     private fun squareMoveable(): Boolean {
-        if (!(fromSquare!!.piece == Piece.KING && fromSquare!!.pieceColor == PieceColor.WHITE)) {
+        val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+
+        if (!(gameMaster.fromSquare!!.piece == Piece.KING && gameMaster.fromSquare!!.pieceColor == pieceColor)) {
             return false
         }
 
-        val square = fromSquare!!
+        val square = gameMaster.fromSquare!!
 
         val kingMovement = kingMovement(square)
 
@@ -111,8 +110,11 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
     }
 
     private fun squareLegal(): Boolean {
+
+        val pieceColor = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
+
         board.board.forEach {
-            if (it.piece == Piece.KING && it.pieceColor == PieceColor.BLACK) {
+            if (it.piece == Piece.KING && it.pieceColor == pieceColor) {
 
                 val kingMovement = kingMovement(it)
                 val reverse = !kingMovement
@@ -157,7 +159,7 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
     }
 
     private fun equalLetterNumber(letter: Letter, number: Number) : Boolean {
-        val equal = Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, number)
+        val equal = Square.letterNumberEqual(gameMaster.toSquare!!.letter, letter, gameMaster.toSquare!!.number, number)
         return equal
     }
 

@@ -20,6 +20,7 @@ class MyGdxGame : ApplicationAdapter() {
     private var textures: Textures? = null
     private var board: Board? = null
     private var myClickListener: MyClickListener? = null
+    private var gameMaster: GameMaster? = null
 
     override fun create() {
 
@@ -36,7 +37,8 @@ class MyGdxGame : ApplicationAdapter() {
 
         textures = Textures()
         board = Board()
-        myClickListener = MyClickListener(board!!)
+        gameMaster = GameMaster()
+        myClickListener = MyClickListener(board!!, gameMaster!!)
 
         Gdx.input.inputProcessor = myClickListener
     }
@@ -48,7 +50,7 @@ class MyGdxGame : ApplicationAdapter() {
         renderUtil!!.renderFonts(spriteBatch!!, font12!!)
         renderUtil!!.renderBoard(spriteBatch!!, board!!, textures!!)
 
-        if (myClickListener!!.fromSquare != null && myClickListener!!.toSquare != null) {
+        if (myClickListener!!.gameMaster!!.fromSquare != null && myClickListener!!.gameMaster!!.toSquare != null) {
 
             val fromToString = fromToString()
 
@@ -56,22 +58,24 @@ class MyGdxGame : ApplicationAdapter() {
             font12!!.draw(spriteBatch, fromToString, 15F, Window.FIXED_HEIGHT - 15F)
             spriteBatch!!.end()
         }
+
+        renderUtil!!.renderSideToMove(spriteBatch!!, gameMaster!!, textures!!)
     }
 
     private fun fromToString(): String {
-        return myClickListener!!.fromSquare!!.letter.toString() +
-                myClickListener!!.fromSquare!!.number.toString() +
+        return gameMaster!!.fromSquare!!.letter.toString() +
+                gameMaster!!.fromSquare!!.number.toString() +
                 " " +
-                myClickListener!!.fromSquare!!.piece.toString() +
+                gameMaster!!.fromSquare!!.piece.toString() +
                 " " +
-                myClickListener!!.fromSquare!!.pieceColor.toString() +
+                gameMaster!!.fromSquare!!.pieceColor.toString() +
                 " -> " +
-                myClickListener!!.toSquare!!.letter.toString() +
-                myClickListener!!.toSquare!!.number.toString() +
+                gameMaster!!.toSquare!!.letter.toString() +
+                gameMaster!!.toSquare!!.number.toString() +
                 " " +
-                myClickListener!!.toSquare!!.piece.toString() +
+                gameMaster!!.toSquare!!.piece.toString() +
                 " " +
-                myClickListener!!.toSquare!!.pieceColor.toString()
+                gameMaster!!.toSquare!!.pieceColor.toString()
     }
 
     override fun dispose() {
