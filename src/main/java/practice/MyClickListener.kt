@@ -84,11 +84,13 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         if (letterOk && numberOk) {
             if (moveToSquare) {
                 toSquare = square
-                if (squareLegal()) {
-                    toSquare!!.piece = fromSquare!!.piece
-                    toSquare!!.pieceColor = fromSquare!!.pieceColor
-                    fromSquare!!.piece = Piece.NONE
-                    fromSquare!!.pieceColor = PieceColor.NONE
+                if (squareMoveable()) {
+                    if (squareLegal()) {
+                        toSquare!!.piece = fromSquare!!.piece
+                        toSquare!!.pieceColor = fromSquare!!.pieceColor
+                        fromSquare!!.piece = Piece.NONE
+                        fromSquare!!.pieceColor = PieceColor.NONE
+                    }
                 }
             } else {
                 fromSquare = square
@@ -96,20 +98,43 @@ class MyClickListener(val board: Board) : ClickListener(), InputProcessor {
         }
     }
 
-    private fun squareLegal(): Boolean {
+    private fun squareMoveable(): Boolean {
         if (!(fromSquare!!.piece == Piece.KING && fromSquare!!.pieceColor == PieceColor.WHITE)) {
             return false
         }
 
-        val letterIndexMinus = fromSquare!!.letter.index - 1
-        val letterIndexPlus = fromSquare!!.letter.index + 1
-        val numberIndexMinus = fromSquare!!.number.index - 1
-        val numberIndexPlus = fromSquare!!.number.index + 1
+        val square = fromSquare!!
 
-        val letter = fromSquare!!.letter
+        val kingMovement = kingMovement(square)
+
+        return kingMovement
+    }
+
+    private fun squareLegal(): Boolean {
+        board.board.forEach {
+            if (it.piece == Piece.KING && it.pieceColor == PieceColor.BLACK) {
+
+                val kingMovement = kingMovement(it)
+                val reverse = !kingMovement
+
+                return reverse
+            }
+        }
+
+        return true
+    }
+
+    private fun kingMovement(square: Square): Boolean {
+
+        val letterIndexMinus = square.letter.index - 1
+        val letterIndexPlus = square.letter.index + 1
+        val numberIndexMinus = square.number.index - 1
+        val numberIndexPlus = square.number.index + 1
+
+        val letter = square.letter
         val letterMinus = LetterNumber.getLetterEnum(letterIndexMinus)
         val letterPlus = LetterNumber.getLetterEnum(letterIndexPlus)
-        val number = fromSquare!!.number
+        val number = square.number
         val numberMinus = LetterNumber.getNumberEnum(numberIndexMinus)
         val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
 
