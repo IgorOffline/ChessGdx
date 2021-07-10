@@ -98,6 +98,7 @@ class RenderUtil {
         return when (square.piece) {
             Piece.NONE -> throw IllegalArgumentException(Messages.UNKNOWN_WHITE_PIECE)
             Piece.KING -> textures.txWK!!
+            Piece.ROOK -> textures.txWR!!
         }
     }
 
@@ -105,6 +106,7 @@ class RenderUtil {
         return when (square.piece) {
             Piece.NONE -> throw IllegalArgumentException(Messages.UNKNOWN_BLACK_PIECE)
             Piece.KING -> textures.txBK!!
+            Piece.ROOK -> textures.txBR!!
         }
     }
 

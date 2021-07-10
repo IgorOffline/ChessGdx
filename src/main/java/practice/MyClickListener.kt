@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import practice.board.*
 import practice.board.Number
 import practice.board.ui.LetterNumber
+import java.lang.IllegalArgumentException
 
 class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListener(), InputProcessor {
 
@@ -79,15 +80,13 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
         if (letterOk && numberOk) {
             if (moveToSquare) {
                 gameMaster.toSquare = square
-                if (squareMoveable()) {
-                    if (squareLegal()) {
-                        gameMaster.toSquare!!.piece = gameMaster.fromSquare!!.piece
-                        gameMaster.toSquare!!.pieceColor = gameMaster.fromSquare!!.pieceColor
-                        gameMaster.fromSquare!!.piece = Piece.NONE
-                        gameMaster.fromSquare!!.pieceColor = PieceColor.NONE
+                if (squareNotFriendly() && squareMoveable() && squareLegal()) {
+                    gameMaster.toSquare!!.piece = gameMaster.fromSquare!!.piece
+                    gameMaster.toSquare!!.pieceColor = gameMaster.fromSquare!!.pieceColor
+                    gameMaster.fromSquare!!.piece = Piece.NONE
+                    gameMaster.fromSquare!!.pieceColor = PieceColor.NONE
 
-                        gameMaster.whiteToMove = !gameMaster.whiteToMove
-                    }
+                    gameMaster.whiteToMove = !gameMaster.whiteToMove
                 }
             } else {
                 gameMaster.fromSquare = square
@@ -95,31 +94,47 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
         }
     }
 
+    private fun squareNotFriendly(): Boolean {
+
+        val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+
+        if (gameMaster.toSquare!!.pieceColor == pieceColor) {
+            return false
+        }
+
+        return true
+    }
+
     private fun squareMoveable(): Boolean {
         val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
 
-        if (!(gameMaster.fromSquare!!.piece == Piece.KING && gameMaster.fromSquare!!.pieceColor == pieceColor)) {
+        if (gameMaster.fromSquare!!.pieceColor != pieceColor) {
             return false
         }
 
         val square = gameMaster.fromSquare!!
 
-        val kingMovement = kingMovement(square)
-
-        return kingMovement
+        return when (square.piece) {
+            Piece.KING -> kingMovement(square)
+            Piece.ROOK -> rookMovement(square)
+            Piece.NONE -> throw IllegalArgumentException("Unknown fromSquare Piece")
+        }
     }
 
     private fun squareLegal(): Boolean {
 
-        val pieceColor = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
+        if (gameMaster.fromSquare!!.piece == Piece.KING) {
 
-        board.board.forEach {
-            if (it.piece == Piece.KING && it.pieceColor == pieceColor) {
+            val pieceColor = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
 
-                val kingMovement = kingMovement(it)
-                val reverse = !kingMovement
+            board.board.forEach {
+                if (it.piece == Piece.KING && it.pieceColor == pieceColor) {
 
-                return reverse
+                    val kingMovement = kingMovement(it)
+                    val reverse = !kingMovement
+
+                    return reverse
+                }
             }
         }
 
@@ -155,6 +170,22 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
             return true
         }
 
+        return false
+    }
+
+    private fun rookMovement(square: Square) : Boolean {
+        for (i in square.number.index .. 7) {
+            val number = LetterNumber.getNumberEnum(i)
+            if (equalLetterNumber(square.letter, number)) {
+                return true
+            }
+        }
+        for (i in square.number.index downTo 0) {
+            val number = LetterNumber.getNumberEnum(i)
+            if (equalLetterNumber(square.letter, number)) {
+                return true
+            }
+        }
         return false
     }
 

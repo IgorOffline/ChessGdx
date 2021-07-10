@@ -1,5 +1,5 @@
 package practice.board
 
 enum class Piece {
-    NONE, KING
+    NONE, KING, ROOK
 }
