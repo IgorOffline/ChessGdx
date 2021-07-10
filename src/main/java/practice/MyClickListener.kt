@@ -174,18 +174,133 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
     }
 
     private fun rookMovement(square: Square) : Boolean {
-        for (i in square.number.index .. 7) {
+        return rookMovementTop(square) ||
+                rookMovementBottom(square) ||
+                rookMovementLeft(square) ||
+                rookMovementRight(square)
+    }
+
+    private fun rookMovementTop(square: Square) : Boolean {
+
+        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
+
+        var breakEnemy = false
+
+        for (i in square.number.index + 1 .. 7) {
+            val letter = square.letter
             val number = LetterNumber.getNumberEnum(i)
-            if (equalLetterNumber(square.letter, number)) {
+            board.board.forEach board@ {
+                if (it.letter == letter && it.number == number) {
+                    if (it.pieceColor == pieceColorFriendly) {
+                        return false
+                    } else if (it.pieceColor == pieceColorEnemy) {
+                        breakEnemy = true
+                        return@board
+                    }
+                }
+            }
+            if (equalLetterNumber(letter, number)) {
                 return true
             }
-        }
-        for (i in square.number.index downTo 0) {
-            val number = LetterNumber.getNumberEnum(i)
-            if (equalLetterNumber(square.letter, number)) {
-                return true
+            if (breakEnemy) {
+                return false
             }
         }
+
+        return false
+    }
+
+    private fun rookMovementBottom(square: Square) : Boolean {
+
+        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
+
+        var breakEnemy = false
+
+        for (i in square.number.index - 1 downTo 0) {
+            val letter = square.letter
+            val number = LetterNumber.getNumberEnum(i)
+            board.board.forEach board@ {
+                if (it.letter == letter && it.number == number) {
+                    if (it.pieceColor == pieceColorFriendly) {
+                        return false
+                    } else if (it.pieceColor == pieceColorEnemy) {
+                        breakEnemy = true
+                        return@board
+                    }
+                }
+            }
+            if (equalLetterNumber(letter, number)) {
+                return true
+            }
+            if (breakEnemy) {
+                return false
+            }
+        }
+
+        return false
+    }
+
+    private fun rookMovementLeft(square: Square) : Boolean {
+
+        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
+
+        var breakEnemy = false
+
+        for (i in square.letter.index - 1 downTo 0) {
+            val letter = LetterNumber.getLetterEnum(i)
+            val number = square.number
+            board.board.forEach board@ {
+                if (it.letter == letter && it.number == number) {
+                    if (it.pieceColor == pieceColorFriendly) {
+                        return false
+                    } else if (it.pieceColor == pieceColorEnemy) {
+                        breakEnemy = true
+                        return@board
+                    }
+                }
+            }
+            if (equalLetterNumber(letter, number)) {
+                return true
+            }
+            if (breakEnemy) {
+                return false
+            }
+        }
+
+        return false
+    }
+
+    private fun rookMovementRight(square: Square) : Boolean {
+
+        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
+
+        var breakEnemy = false
+
+        for (i in square.letter.index + 1 .. 7) {
+            val letter = LetterNumber.getLetterEnum(i)
+            val number = square.number
+            board.board.forEach board@ {
+                if (it.letter == letter && it.number == number) {
+                    if (it.pieceColor == pieceColorFriendly) {
+                        return false
+                    } else if (it.pieceColor == pieceColorEnemy) {
+                        breakEnemy = true
+                        return@board
+                    }
+                }
+            }
+            if (equalLetterNumber(letter, number)) {
+                return true
+            }
+            if (breakEnemy) {
+                return false
+            }
+        }
+
         return false
     }
 
