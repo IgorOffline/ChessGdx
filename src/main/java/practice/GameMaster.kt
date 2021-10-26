@@ -2,4 +2,7 @@ package practice
 
 import practice.board.Square
 
-data class GameMaster(var fromSquare: Square? = null, var toSquare: Square? = null, var whiteToMove: Boolean = true)
+data class GameMaster(var fromSquare: Square? = null,
+                      var toSquare: Square? = null,
+                      var whiteToMove: Boolean = true,
+                      var blackKingInCheck: Boolean = false)

@@ -116,4 +116,12 @@ class RenderUtil {
         spriteBatch.draw(texture, 16F, Window.FIXED_HEIGHT - 65F, textureSize, textureSize)
         spriteBatch.end()
     }
+
+    fun renderBlackKingInCheck(spriteBatch: SpriteBatch, gameMaster: GameMaster, textures: Textures) {
+        if (gameMaster.blackKingInCheck) {
+            spriteBatch.begin()
+            spriteBatch.draw(textures.txBK!!, 53F, Window.FIXED_HEIGHT - 65F, textureSize, textureSize)
+            spriteBatch.end()
+        }
+    }
 }

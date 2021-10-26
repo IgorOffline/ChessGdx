@@ -2,14 +2,13 @@ package practice
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
-import com.badlogic.gdx.InputProcessor
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.badlogic.gdx.InputAdapter
 import practice.board.*
 import practice.board.Number
 import practice.board.ui.LetterNumber
 import java.lang.IllegalArgumentException
 
-class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListener(), InputProcessor {
+class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapter() {
 
     private var dragDrop = 0L
     private var lastDragDrop = 0L
@@ -87,6 +86,8 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
                     gameMaster.fromSquare!!.pieceColor = PieceColor.NONE
 
                     gameMaster.whiteToMove = !gameMaster.whiteToMove
+
+                    isBlackKingInCheck()
                 }
             } else {
                 gameMaster.fromSquare = square
@@ -139,6 +140,65 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
         }
 
         return true
+    }
+
+    private fun isBlackKingInCheck() {
+
+        gameMaster.blackKingInCheck = false
+
+        if (gameMaster.whiteToMove) {
+            return
+        }
+
+        var sqBlackKing: Square? = null
+
+        board.board.forEach board@ {
+            if (it.piece == Piece.KING && it.pieceColor == PieceColor.BLACK) {
+                sqBlackKing = it
+                return@board
+            }
+        }
+
+        val whiteRookChecksBlackKingLeft = whiteRookChecksBlackKingLeft(sqBlackKing!!)
+        val whiteRookChecksBlackKingRight = whiteRookChecksBlackKingRight(sqBlackKing!!)
+
+        gameMaster.blackKingInCheck = whiteRookChecksBlackKingLeft || whiteRookChecksBlackKingRight
+    }
+
+    private fun whiteRookChecksBlackKingLeft(sqBlackKing: Square): Boolean {
+        for (i in sqBlackKing.letter.index - 1 downTo 0) {
+            board.board.forEach board@ {
+                val letter = LetterNumber.getLetterEnum(i)
+                val number = sqBlackKing.number
+                if (it.letter == letter && it.number == number) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                        return true
+                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun whiteRookChecksBlackKingRight(sqBlackKing: Square): Boolean {
+        for (i in sqBlackKing.letter.index + 1 .. 7) {
+            board.board.forEach board@ {
+                val letter = LetterNumber.getLetterEnum(i)
+                val number = sqBlackKing.number
+                if (it.letter == letter && it.number == number) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                        return true
+                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return false
     }
 
     private fun kingMovement(square: Square): Boolean {
@@ -307,25 +367,5 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : ClickListe
     private fun equalLetterNumber(letter: Letter, number: Number) : Boolean {
         val equal = Square.letterNumberEqual(gameMaster.toSquare!!.letter, letter, gameMaster.toSquare!!.number, number)
         return equal
-    }
-
-    override fun keyDown(keycode: Int): Boolean {
-        return true
-    }
-
-    override fun keyUp(keycode: Int): Boolean {
-        return true
-    }
-
-    override fun keyTyped(character: Char): Boolean {
-        return true
-    }
-
-    override fun mouseMoved(screenX: Int, screenY: Int): Boolean {
-        return true
-    }
-
-    override fun scrolled(amountX: Float, amountY: Float): Boolean {
-        return true
     }
 }

@@ -50,7 +50,7 @@ class MyGdxGame : ApplicationAdapter() {
         renderUtil!!.renderFonts(spriteBatch!!, font12!!)
         renderUtil!!.renderBoard(spriteBatch!!, board!!, textures!!)
 
-        if (myClickListener!!.gameMaster!!.fromSquare != null && myClickListener!!.gameMaster!!.toSquare != null) {
+        if (myClickListener!!.gameMaster.fromSquare != null && myClickListener!!.gameMaster.toSquare != null) {
 
             val fromToString = fromToString()
 
@@ -60,6 +60,8 @@ class MyGdxGame : ApplicationAdapter() {
         }
 
         renderUtil!!.renderSideToMove(spriteBatch!!, gameMaster!!, textures!!)
+
+        renderUtil!!.renderBlackKingInCheck(spriteBatch!!, gameMaster!!, textures!!)
     }
 
     private fun fromToString(): String {
@@ -80,6 +82,7 @@ class MyGdxGame : ApplicationAdapter() {
 
     override fun dispose() {
         spriteBatch!!.dispose()
+        font12!!.dispose()
         shapeRenderer!!.dispose()
         textures!!.dispose()
     }
