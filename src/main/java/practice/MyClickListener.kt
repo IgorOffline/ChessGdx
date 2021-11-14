@@ -80,14 +80,32 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
             if (moveToSquare) {
                 gameMaster.toSquare = square
                 if (squareNotFriendly() && squareMoveable() && squareLegal()) {
+
+                    val toSquareOriginalPiece = gameMaster.toSquare!!.piece
+                    val toSquareOriginalPieceColor = gameMaster.toSquare!!.pieceColor
+                    val fromSquareOriginalPiece = gameMaster.fromSquare!!.piece
+                    val fromSquareOriginalPieceColor = gameMaster.fromSquare!!.pieceColor
+
                     gameMaster.toSquare!!.piece = gameMaster.fromSquare!!.piece
                     gameMaster.toSquare!!.pieceColor = gameMaster.fromSquare!!.pieceColor
                     gameMaster.fromSquare!!.piece = Piece.NONE
                     gameMaster.fromSquare!!.pieceColor = PieceColor.NONE
 
-                    gameMaster.whiteToMove = !gameMaster.whiteToMove
+                    if (!gameMaster.whiteToMove) {
+                        isBlackKingInCheck()
+                    }
 
-                    isBlackKingInCheck()
+                    if (gameMaster.blackKingInCheck) {
+                        // revert
+                        gameMaster.toSquare!!.piece = toSquareOriginalPiece
+                        gameMaster.toSquare!!.pieceColor = toSquareOriginalPieceColor
+                        gameMaster.fromSquare!!.piece = fromSquareOriginalPiece
+                        gameMaster.fromSquare!!.pieceColor = fromSquareOriginalPieceColor
+
+                        gameMaster.whiteToMove = !gameMaster.whiteToMove
+                    }
+
+                    gameMaster.whiteToMove = !gameMaster.whiteToMove
                 }
             } else {
                 gameMaster.fromSquare = square
@@ -145,10 +163,6 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
     private fun isBlackKingInCheck() {
 
         gameMaster.blackKingInCheck = false
-
-        if (gameMaster.whiteToMove) {
-            return
-        }
 
         var sqBlackKing: Square? = null
 
