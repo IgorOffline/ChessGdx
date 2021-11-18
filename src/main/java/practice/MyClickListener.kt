@@ -91,11 +91,9 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
                     gameMaster.fromSquare!!.piece = Piece.NONE
                     gameMaster.fromSquare!!.pieceColor = PieceColor.NONE
 
-                    if (!gameMaster.whiteToMove) {
-                        isBlackKingInCheck()
-                    }
+                    isKingInCheck()
 
-                    if (gameMaster.blackKingInCheck) {
+                    if (gameMaster.whiteKingInCheck || gameMaster.blackKingInCheck) {
                         // revert
                         gameMaster.toSquare!!.piece = toSquareOriginalPiece
                         gameMaster.toSquare!!.pieceColor = toSquareOriginalPieceColor
@@ -160,34 +158,49 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         return true
     }
 
-    private fun isBlackKingInCheck() {
+    private fun isKingInCheck() {
 
-        gameMaster.blackKingInCheck = false
+        var kingPieceColor: PieceColor
+        var rookPieceColor: PieceColor
 
-        var sqBlackKing: Square? = null
+        if (gameMaster.whiteToMove) {
+            gameMaster.whiteKingInCheck = false
+            kingPieceColor = PieceColor.WHITE
+            rookPieceColor = PieceColor.BLACK
+        } else {
+            gameMaster.blackKingInCheck = false
+            kingPieceColor = PieceColor.BLACK
+            rookPieceColor = PieceColor.WHITE
+        }
+
+        var sqKing: Square? = null
 
         board.board.forEach board@ {
-            if (it.piece == Piece.KING && it.pieceColor == PieceColor.BLACK) {
-                sqBlackKing = it
+            if (it.piece == Piece.KING && it.pieceColor == kingPieceColor) {
+                sqKing = it
                 return@board
             }
         }
 
-        val whiteRookChecksBlackKingTop = whiteRookChecksBlackKingTop(sqBlackKing!!)
-        val whiteRookChecksBlackKingBottom = whiteRookChecksBlackKingBottom(sqBlackKing!!)
-        val whiteRookChecksBlackKingLeft = whiteRookChecksBlackKingLeft(sqBlackKing!!)
-        val whiteRookChecksBlackKingRight = whiteRookChecksBlackKingRight(sqBlackKing!!)
+        val rookChecksKingTop = rookChecksKingTop(sqKing!!, rookPieceColor)
+        val rookChecksKingBottom = rookChecksKingBottom(sqKing!!, rookPieceColor)
+        val rookChecksKingLeft = rookChecksKingLeft(sqKing!!, rookPieceColor)
+        val rookChecksKingRight = rookChecksKingRight(sqKing!!, rookPieceColor)
 
-        gameMaster.blackKingInCheck = whiteRookChecksBlackKingTop || whiteRookChecksBlackKingBottom || whiteRookChecksBlackKingLeft || whiteRookChecksBlackKingRight
+        if (kingPieceColor == PieceColor.WHITE) {
+            gameMaster.whiteKingInCheck = rookChecksKingTop || rookChecksKingBottom || rookChecksKingLeft || rookChecksKingRight
+        } else if (kingPieceColor == PieceColor.BLACK) {
+            gameMaster.blackKingInCheck = rookChecksKingTop || rookChecksKingBottom || rookChecksKingLeft || rookChecksKingRight
+        }
     }
 
-    private fun whiteRookChecksBlackKingTop(sqBlackKing: Square): Boolean {
+    private fun rookChecksKingTop(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
         for (i in sqBlackKing.number.index - 1 downTo 0) {
             board.board.forEach board@ {
                 val letter = sqBlackKing.letter
                 val number = LetterNumber.getNumberEnum(i)
                 if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
                         return true
                     } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
                         return false
@@ -199,13 +212,13 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         return false
     }
 
-    private fun whiteRookChecksBlackKingBottom(sqBlackKing: Square): Boolean {
+    private fun rookChecksKingBottom(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
         for (i in sqBlackKing.number.index + 1 .. 7) {
             board.board.forEach board@ {
                 val letter = sqBlackKing.letter
                 val number = LetterNumber.getNumberEnum(i)
                 if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
                         return true
                     } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
                         return false
@@ -217,13 +230,13 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         return false
     }
 
-    private fun whiteRookChecksBlackKingLeft(sqBlackKing: Square): Boolean {
+    private fun rookChecksKingLeft(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
         for (i in sqBlackKing.letter.index - 1 downTo 0) {
             board.board.forEach board@ {
                 val letter = LetterNumber.getLetterEnum(i)
                 val number = sqBlackKing.number
                 if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
                         return true
                     } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
                         return false
@@ -235,13 +248,13 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         return false
     }
 
-    private fun whiteRookChecksBlackKingRight(sqBlackKing: Square): Boolean {
+    private fun rookChecksKingRight(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
         for (i in sqBlackKing.letter.index + 1 .. 7) {
             board.board.forEach board@ {
                 val letter = LetterNumber.getLetterEnum(i)
                 val number = sqBlackKing.number
                 if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
                         return true
                     } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
                         return false

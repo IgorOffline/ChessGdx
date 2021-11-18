@@ -117,10 +117,17 @@ class RenderUtil {
         spriteBatch.end()
     }
 
-    fun renderBlackKingInCheck(spriteBatch: SpriteBatch, gameMaster: GameMaster, textures: Textures) {
-        if (gameMaster.blackKingInCheck) {
+    fun renderKingInCheck(spriteBatch: SpriteBatch, gameMaster: GameMaster, textures: Textures) {
+        val x = 53F
+        val y = Window.FIXED_HEIGHT - 65F
+
+        if (gameMaster.whiteKingInCheck) {
             spriteBatch.begin()
-            spriteBatch.draw(textures.txBK!!, 53F, Window.FIXED_HEIGHT - 65F, textureSize, textureSize)
+            spriteBatch.draw(textures.txWK!!, x, y, textureSize, textureSize)
+            spriteBatch.end()
+        } else if (gameMaster.blackKingInCheck) {
+            spriteBatch.begin()
+            spriteBatch.draw(textures.txBK!!, x, y, textureSize, textureSize)
             spriteBatch.end()
         }
     }

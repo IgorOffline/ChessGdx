@@ -61,7 +61,7 @@ class MyGdxGame : ApplicationAdapter() {
 
         renderUtil!!.renderSideToMove(spriteBatch!!, gameMaster!!, textures!!)
 
-        renderUtil!!.renderBlackKingInCheck(spriteBatch!!, gameMaster!!, textures!!)
+        renderUtil!!.renderKingInCheck(spriteBatch!!, gameMaster!!, textures!!)
     }
 
     private fun fromToString(): String {
