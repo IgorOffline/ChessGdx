@@ -173,10 +173,48 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
             }
         }
 
+        val whiteRookChecksBlackKingTop = whiteRookChecksBlackKingTop(sqBlackKing!!)
+        val whiteRookChecksBlackKingBottom = whiteRookChecksBlackKingBottom(sqBlackKing!!)
         val whiteRookChecksBlackKingLeft = whiteRookChecksBlackKingLeft(sqBlackKing!!)
         val whiteRookChecksBlackKingRight = whiteRookChecksBlackKingRight(sqBlackKing!!)
 
-        gameMaster.blackKingInCheck = whiteRookChecksBlackKingLeft || whiteRookChecksBlackKingRight
+        gameMaster.blackKingInCheck = whiteRookChecksBlackKingTop || whiteRookChecksBlackKingBottom || whiteRookChecksBlackKingLeft || whiteRookChecksBlackKingRight
+    }
+
+    private fun whiteRookChecksBlackKingTop(sqBlackKing: Square): Boolean {
+        for (i in sqBlackKing.number.index - 1 downTo 0) {
+            board.board.forEach board@ {
+                val letter = sqBlackKing.letter
+                val number = LetterNumber.getNumberEnum(i)
+                if (it.letter == letter && it.number == number) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                        return true
+                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    private fun whiteRookChecksBlackKingBottom(sqBlackKing: Square): Boolean {
+        for (i in sqBlackKing.number.index + 1 .. 7) {
+            board.board.forEach board@ {
+                val letter = sqBlackKing.letter
+                val number = LetterNumber.getNumberEnum(i)
+                if (it.letter == letter && it.number == number) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == PieceColor.WHITE) {
+                        return true
+                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
+                        return false
+                    }
+                }
+            }
+        }
+
+        return false
     }
 
     private fun whiteRookChecksBlackKingLeft(sqBlackKing: Square): Boolean {
