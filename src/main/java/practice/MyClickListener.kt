@@ -4,8 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import practice.board.*
-import practice.board.Number
 import practice.board.ui.LetterNumber
+import practice.piece.King
+import practice.piece.Rook
 import java.lang.IllegalArgumentException
 
 class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapter() {
@@ -79,7 +80,7 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         if (letterOk && numberOk) {
             if (moveToSquare) {
                 gameMaster.toSquare = square
-                if (squareNotFriendly() && squareMoveable() && squareLegal()) {
+                if (squareNotFriendly() && squareMovable() && squareLegal()) {
 
                     val toSquareOriginalPiece = gameMaster.toSquare!!.piece
                     val toSquareOriginalPieceColor = gameMaster.toSquare!!.pieceColor
@@ -122,7 +123,7 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         return true
     }
 
-    private fun squareMoveable(): Boolean {
+    private fun squareMovable(): Boolean {
         val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
 
         if (gameMaster.fromSquare!!.pieceColor != pieceColor) {
@@ -132,8 +133,8 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         val square = gameMaster.fromSquare!!
 
         return when (square.piece) {
-            Piece.KING -> kingMovement(square)
-            Piece.ROOK -> rookMovement(square)
+            Piece.KING -> King.kingMovement(gameMaster, square)
+            Piece.ROOK -> Rook.rookMovement(board, gameMaster, square)
             Piece.NONE -> throw IllegalArgumentException("Unknown fromSquare Piece")
         }
     }
@@ -147,10 +148,9 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
             board.board.forEach {
                 if (it.piece == Piece.KING && it.pieceColor == pieceColor) {
 
-                    val kingMovement = kingMovement(it)
-                    val reverse = !kingMovement
+                    val kingMovement = King.kingMovement(gameMaster, it)
 
-                    return reverse
+                    return !kingMovement
                 }
             }
         }
@@ -160,8 +160,8 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
 
     private fun isKingInCheck() {
 
-        var kingPieceColor: PieceColor
-        var rookPieceColor: PieceColor
+        val kingPieceColor: PieceColor
+        val rookPieceColor: PieceColor
 
         if (gameMaster.whiteToMove) {
             gameMaster.whiteKingInCheck = false
@@ -182,255 +182,15 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
             }
         }
 
-        val rookChecksKingTop = rookChecksKingTop(sqKing!!, rookPieceColor)
-        val rookChecksKingBottom = rookChecksKingBottom(sqKing!!, rookPieceColor)
-        val rookChecksKingLeft = rookChecksKingLeft(sqKing!!, rookPieceColor)
-        val rookChecksKingRight = rookChecksKingRight(sqKing!!, rookPieceColor)
+        val rookChecksKingTop = Rook.rookChecksKingTop(board, sqKing!!, rookPieceColor)
+        val rookChecksKingBottom = Rook.rookChecksKingBottom(board, sqKing!!, rookPieceColor)
+        val rookChecksKingLeft = Rook.rookChecksKingLeft(board, sqKing!!, rookPieceColor)
+        val rookChecksKingRight = Rook.rookChecksKingRight(board, sqKing!!, rookPieceColor)
 
         if (kingPieceColor == PieceColor.WHITE) {
             gameMaster.whiteKingInCheck = rookChecksKingTop || rookChecksKingBottom || rookChecksKingLeft || rookChecksKingRight
         } else if (kingPieceColor == PieceColor.BLACK) {
             gameMaster.blackKingInCheck = rookChecksKingTop || rookChecksKingBottom || rookChecksKingLeft || rookChecksKingRight
         }
-    }
-
-    private fun rookChecksKingTop(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
-        for (i in sqBlackKing.number.index - 1 downTo 0) {
-            board.board.forEach board@ {
-                val letter = sqBlackKing.letter
-                val number = LetterNumber.getNumberEnum(i)
-                if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                        return true
-                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                        return false
-                    }
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun rookChecksKingBottom(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
-        for (i in sqBlackKing.number.index + 1 .. 7) {
-            board.board.forEach board@ {
-                val letter = sqBlackKing.letter
-                val number = LetterNumber.getNumberEnum(i)
-                if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                        return true
-                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                        return false
-                    }
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun rookChecksKingLeft(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
-        for (i in sqBlackKing.letter.index - 1 downTo 0) {
-            board.board.forEach board@ {
-                val letter = LetterNumber.getLetterEnum(i)
-                val number = sqBlackKing.number
-                if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                        return true
-                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                        return false
-                    }
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun rookChecksKingRight(sqBlackKing: Square, rookPieceColor: PieceColor): Boolean {
-        for (i in sqBlackKing.letter.index + 1 .. 7) {
-            board.board.forEach board@ {
-                val letter = LetterNumber.getLetterEnum(i)
-                val number = sqBlackKing.number
-                if (it.letter == letter && it.number == number) {
-                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                        return true
-                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                        return false
-                    }
-                }
-            }
-        }
-
-        return false
-    }
-
-    private fun kingMovement(square: Square): Boolean {
-
-        val letterIndexMinus = square.letter.index - 1
-        val letterIndexPlus = square.letter.index + 1
-        val numberIndexMinus = square.number.index - 1
-        val numberIndexPlus = square.number.index + 1
-
-        val letter = square.letter
-        val letterMinus = LetterNumber.getLetterEnum(letterIndexMinus)
-        val letterPlus = LetterNumber.getLetterEnum(letterIndexPlus)
-        val number = square.number
-        val numberMinus = LetterNumber.getNumberEnum(numberIndexMinus)
-        val numberPlus = LetterNumber.getNumberEnum(numberIndexPlus)
-
-        val equal1 = equalLetterNumber(letterMinus, number)
-        val equal2 = equalLetterNumber(letterMinus, numberPlus)
-        val equal3 = equalLetterNumber(letterMinus, numberMinus)
-
-        val equal4 = equalLetterNumber(letterPlus, number)
-        val equal5 = equalLetterNumber(letterPlus, numberPlus)
-        val equal6 = equalLetterNumber(letterPlus, numberMinus)
-
-        val equalTop = equalLetterNumber(letter, numberPlus)
-        val equalBottom = equalLetterNumber(letter, numberMinus)
-
-        if (equal1 || equal2 || equal3 || equal4 || equal5 || equal6 || equalTop || equalBottom) {
-            return true
-        }
-
-        return false
-    }
-
-    private fun rookMovement(square: Square) : Boolean {
-        return rookMovementTop(square) ||
-                rookMovementBottom(square) ||
-                rookMovementLeft(square) ||
-                rookMovementRight(square)
-    }
-
-    private fun rookMovementTop(square: Square) : Boolean {
-
-        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
-        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
-
-        var breakEnemy = false
-
-        for (i in square.number.index + 1 .. 7) {
-            val letter = square.letter
-            val number = LetterNumber.getNumberEnum(i)
-            board.board.forEach board@ {
-                if (it.letter == letter && it.number == number) {
-                    if (it.pieceColor == pieceColorFriendly) {
-                        return false
-                    } else if (it.pieceColor == pieceColorEnemy) {
-                        breakEnemy = true
-                        return@board
-                    }
-                }
-            }
-            if (equalLetterNumber(letter, number)) {
-                return true
-            }
-            if (breakEnemy) {
-                return false
-            }
-        }
-
-        return false
-    }
-
-    private fun rookMovementBottom(square: Square) : Boolean {
-
-        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
-        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
-
-        var breakEnemy = false
-
-        for (i in square.number.index - 1 downTo 0) {
-            val letter = square.letter
-            val number = LetterNumber.getNumberEnum(i)
-            board.board.forEach board@ {
-                if (it.letter == letter && it.number == number) {
-                    if (it.pieceColor == pieceColorFriendly) {
-                        return false
-                    } else if (it.pieceColor == pieceColorEnemy) {
-                        breakEnemy = true
-                        return@board
-                    }
-                }
-            }
-            if (equalLetterNumber(letter, number)) {
-                return true
-            }
-            if (breakEnemy) {
-                return false
-            }
-        }
-
-        return false
-    }
-
-    private fun rookMovementLeft(square: Square) : Boolean {
-
-        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
-        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
-
-        var breakEnemy = false
-
-        for (i in square.letter.index - 1 downTo 0) {
-            val letter = LetterNumber.getLetterEnum(i)
-            val number = square.number
-            board.board.forEach board@ {
-                if (it.letter == letter && it.number == number) {
-                    if (it.pieceColor == pieceColorFriendly) {
-                        return false
-                    } else if (it.pieceColor == pieceColorEnemy) {
-                        breakEnemy = true
-                        return@board
-                    }
-                }
-            }
-            if (equalLetterNumber(letter, number)) {
-                return true
-            }
-            if (breakEnemy) {
-                return false
-            }
-        }
-
-        return false
-    }
-
-    private fun rookMovementRight(square: Square) : Boolean {
-
-        val pieceColorFriendly = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
-        val pieceColorEnemy = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
-
-        var breakEnemy = false
-
-        for (i in square.letter.index + 1 .. 7) {
-            val letter = LetterNumber.getLetterEnum(i)
-            val number = square.number
-            board.board.forEach board@ {
-                if (it.letter == letter && it.number == number) {
-                    if (it.pieceColor == pieceColorFriendly) {
-                        return false
-                    } else if (it.pieceColor == pieceColorEnemy) {
-                        breakEnemy = true
-                        return@board
-                    }
-                }
-            }
-            if (equalLetterNumber(letter, number)) {
-                return true
-            }
-            if (breakEnemy) {
-                return false
-            }
-        }
-
-        return false
-    }
-
-    private fun equalLetterNumber(letter: Letter, number: Number) : Boolean {
-        val equal = Square.letterNumberEqual(gameMaster.toSquare!!.letter, letter, gameMaster.toSquare!!.number, number)
-        return equal
     }
 }
