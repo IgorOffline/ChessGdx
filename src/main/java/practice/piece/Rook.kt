@@ -105,17 +105,11 @@ class Rook {
         }
 
         fun rookChecksKingTop(board: Board, sqKing: Square, rookPieceColor: PieceColor): Boolean {
+
             for (i in sqKing.number.index - 1 downTo 0) {
-                board.board.forEach board@ {
-                    val letter = sqKing.letter
-                    val number = LetterNumber.getNumberEnum(i)
-                    if (it.letter == letter && it.number == number) {
-                        if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                            return true
-                        } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                            return false
-                        }
-                    }
+                val rookChecksKingTopBottom = rookChecksKingTopBottom(board, sqKing, rookPieceColor, i)
+                rookChecksKingTopBottom?.let {
+                    return rookChecksKingTopBottom
                 }
             }
 
@@ -123,17 +117,11 @@ class Rook {
         }
 
         fun rookChecksKingBottom(board: Board, sqKing: Square, rookPieceColor: PieceColor): Boolean {
+
             for (i in sqKing.number.index + 1 .. 7) {
-                board.board.forEach board@ {
-                    val letter = sqKing.letter
-                    val number = LetterNumber.getNumberEnum(i)
-                    if (it.letter == letter && it.number == number) {
-                        if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                            return true
-                        } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                            return false
-                        }
-                    }
+                val rookChecksKingTopBottom = rookChecksKingTopBottom(board, sqKing, rookPieceColor, i)
+                rookChecksKingTopBottom?.let {
+                    return rookChecksKingTopBottom
                 }
             }
 
@@ -141,17 +129,11 @@ class Rook {
         }
 
         fun rookChecksKingLeft(board: Board, sqKing: Square, rookPieceColor: PieceColor): Boolean {
+
             for (i in sqKing.letter.index - 1 downTo 0) {
-                board.board.forEach board@ {
-                    val letter = LetterNumber.getLetterEnum(i)
-                    val number = sqKing.number
-                    if (it.letter == letter && it.number == number) {
-                        if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                            return true
-                        } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                            return false
-                        }
-                    }
+                val rookChecksKingLeftRight = rookChecksKingLeftRight(board, sqKing, rookPieceColor, i)
+                rookChecksKingLeftRight?.let {
+                    return rookChecksKingLeftRight
                 }
             }
 
@@ -159,21 +141,45 @@ class Rook {
         }
 
         fun rookChecksKingRight(board: Board, sqKing: Square, rookPieceColor: PieceColor): Boolean {
+
             for (i in sqKing.letter.index + 1 .. 7) {
-                board.board.forEach board@ {
-                    val letter = LetterNumber.getLetterEnum(i)
-                    val number = sqKing.number
-                    if (it.letter == letter && it.number == number) {
-                        if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
-                            return true
-                        } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
-                            return false
-                        }
-                    }
+                val rookChecksKingLeftRight = rookChecksKingLeftRight(board, sqKing, rookPieceColor, i)
+                rookChecksKingLeftRight?.let {
+                    return rookChecksKingLeftRight
                 }
             }
 
             return false
+        }
+
+        private fun rookChecksKingTopBottom(board: Board, sqKing: Square, rookPieceColor: PieceColor, i: Int) : Boolean? {
+
+            val letter = sqKing.letter
+            val number = LetterNumber.getNumberEnum(i)
+
+            return rookChecksKingTopBottomLeftRight(board, rookPieceColor, letter, number)
+        }
+
+        private fun rookChecksKingLeftRight(board: Board, sqKing: Square, rookPieceColor: PieceColor, i: Int) : Boolean? {
+
+            val letter = LetterNumber.getLetterEnum(i)
+            val number = sqKing.number
+
+            return rookChecksKingTopBottomLeftRight(board, rookPieceColor, letter, number)
+        }
+
+        private fun rookChecksKingTopBottomLeftRight(board: Board, rookPieceColor: PieceColor, letter: Letter, number: practice.board.Number) : Boolean? {
+            board.board.forEach board@ {
+                if (it.letter == letter && it.number == number) {
+                    if (it.piece == Piece.ROOK && it.pieceColor == rookPieceColor) {
+                        return true
+                    } else if (it.piece == Piece.ROOK || it.piece == Piece.KING) {
+                        return false
+                    }
+                }
+            }
+
+            return null
         }
     }
 }
