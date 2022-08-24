@@ -68,6 +68,7 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         if (xBetween && yBetween) {
             for (square in board.board) {
                 between(i, j, square, moveToSquare)
+                isBlackKingCheckmated()
             }
         }
     }
@@ -78,7 +79,9 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         val letterOk = square.letter == letter
         val numberOk = square.number == number
         if (letterOk && numberOk) {
-            if (moveToSquare) {
+            if (!moveToSquare) {
+                gameMaster.fromSquare = square
+            } else {
                 gameMaster.toSquare = square
                 if (squareNotFriendly() && squareMovable() && squareLegal()) {
 
@@ -106,8 +109,6 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
 
                     gameMaster.whiteToMove = !gameMaster.whiteToMove
                 }
-            } else {
-                gameMaster.fromSquare = square
             }
         }
     }
@@ -192,5 +193,26 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
         } else if (kingPieceColor == PieceColor.BLACK) {
             gameMaster.blackKingInCheck = rookChecksKingTop || rookChecksKingBottom || rookChecksKingLeft || rookChecksKingRight
         }
+    }
+
+    // TODO write this
+    private fun isBlackKingCheckmated() {
+
+        var blackKing: Square? = null
+
+        board.board.forEach board@ {
+            if (it.piece == Piece.KING && it.pieceColor == PieceColor.BLACK) {
+                blackKing = it
+                return@board
+            }
+        }
+
+        if (blackKing == null) {
+            throw IllegalStateException("Black King not found!")
+        }
+
+        val kingMoves = King.kingMoves(blackKing!!)
+
+        gameMaster.blackKingLegalMoves = kingMoves.size
     }
 }

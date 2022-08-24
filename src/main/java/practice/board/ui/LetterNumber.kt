@@ -35,6 +35,7 @@ class LetterNumber {
                 else -> throw IllegalArgumentException(Messages.UNKNOWN_LETTER)
             }
         }
+
         fun getNumber(number: Int): String {
             return when (number) {
                 0 -> "1"
@@ -63,6 +64,7 @@ class LetterNumber {
                 else -> throw IllegalArgumentException(Messages.UNKNOWN_NUMBER)
             }
         }
+
         fun getNumberEnumReverse(number: Int): Number {
             return when (number) {
                 -1 -> Number.N99
@@ -77,6 +79,14 @@ class LetterNumber {
                 8 -> Number.NMinus1
                 else -> throw IllegalArgumentException(Messages.UNKNOWN_NUMBER)
             }
+        }
+
+        fun isEnumLegal(letter: Letter): Boolean {
+            return letter.index in 0..7
+        }
+
+        fun isEnumLegal(number: Number): Boolean {
+            return number.index in 0..7
         }
     }
 }

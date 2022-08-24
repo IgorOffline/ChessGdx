@@ -1,0 +1,1 @@
+- # of legal moves, if # == 0 checkmate

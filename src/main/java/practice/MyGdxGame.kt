@@ -62,6 +62,10 @@ class MyGdxGame : ApplicationAdapter() {
         renderUtil!!.renderSideToMove(spriteBatch!!, gameMaster!!, textures!!)
 
         renderUtil!!.renderKingInCheck(spriteBatch!!, gameMaster!!, textures!!)
+
+        spriteBatch!!.begin()
+        font12!!.draw(spriteBatch, "Black king legal moves: " + gameMaster!!.blackKingLegalMoves, 15F, Window.FIXED_HEIGHT - 75F)
+        spriteBatch!!.end()
     }
 
     private fun fromToString(): String {

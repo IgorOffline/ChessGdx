@@ -8,7 +8,8 @@ data class GameMaster(var fromSquare: Square? = null,
                       var toSquare: Square? = null,
                       var whiteToMove: Boolean = true,
                       var whiteKingInCheck: Boolean = false,
-                      var blackKingInCheck: Boolean = false) {
+                      var blackKingInCheck: Boolean = false,
+                      var blackKingLegalMoves: Int = 0) {
 
     fun equalLetterNumber(letter: Letter, number: Number): Boolean {
         return Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, number)
