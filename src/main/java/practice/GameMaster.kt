@@ -1,8 +1,8 @@
 package practice
 
-import practice.board.Letter
+import practice.board.*
 import practice.board.Number
-import practice.board.Square
+import practice.piece.King
 
 data class GameMaster(var fromSquare: Square? = null,
                       var toSquare: Square? = null,
@@ -16,6 +16,19 @@ data class GameMaster(var fromSquare: Square? = null,
     }
 
     fun movement() {
-        //
+        val pieceColorToMove = if (whiteToMove) PieceColor.WHITE else PieceColor.BLACK
+        if (fromSquare!!.piece == Piece.KING && fromSquare!!.pieceColor == pieceColorToMove) {
+            val squares = King.kingMoves(fromSquare!!)
+            squares.forEach {
+                if (equalLetterNumber(it.letter, it.number)) {
+                    toSquare!!.piece = fromSquare!!.piece
+                    toSquare!!.pieceColor = pieceColorToMove
+                    fromSquare!!.piece = Piece.NONE
+                    fromSquare!!.pieceColor = PieceColor.NONE
+                    whiteToMove = !whiteToMove
+                    return@forEach
+                }
+            }
+        }
     }
 }
