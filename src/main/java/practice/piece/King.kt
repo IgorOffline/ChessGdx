@@ -1,6 +1,6 @@
 package practice.piece
 
-import practice.GameMaster
+import practice.board.Board
 import practice.board.Piece
 import practice.board.PieceColor
 import practice.board.Square
@@ -9,7 +9,29 @@ import practice.board.ui.LetterNumber
 class King {
     companion object {
 
-        fun kingMoves(kingSquare: Square): List<Square> {
+        fun kingMoves(kingSquare: Square, board: Board): List<Square> {
+
+            val potentialMoves = kingMovesInner(kingSquare)
+
+            val oppositeColor = if (kingSquare.pieceColor == PieceColor.WHITE) PieceColor.BLACK else PieceColor.WHITE
+
+            var oppositeKing: Square? = null
+
+            board.board.forEach {
+                if (it.piece == Piece.KING && it.pieceColor == oppositeColor) {
+                    oppositeKing = it
+                    return@forEach
+                }
+            }
+
+            val illegalMoves = kingMovesInner(oppositeKing!!)
+
+            potentialMoves.removeAll(illegalMoves)
+
+            return potentialMoves
+        }
+
+        private fun kingMovesInner(kingSquare: Square): MutableList<Square> {
 
             val moves = mutableListOf<Square>()
 

@@ -37,7 +37,7 @@ class MyGdxGame : ApplicationAdapter() {
 
         textures = Textures()
         board = Board()
-        gameMaster = GameMaster()
+        gameMaster = GameMaster(board!!)
         myClickListener = MyClickListener(board!!, gameMaster!!)
 
         Gdx.input.inputProcessor = myClickListener
