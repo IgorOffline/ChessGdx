@@ -14,4 +14,8 @@ data class GameMaster(var fromSquare: Square? = null,
     fun equalLetterNumber(letter: Letter, number: Number): Boolean {
         return Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, number)
     }
+
+    fun movement() {
+        //
+    }
 }
