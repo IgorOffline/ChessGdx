@@ -7,7 +7,8 @@ class Board(val board: MutableList<Square> = mutableListOf()) {
     init {
         val filledSquares = listOf(
             Square(Letter.E, Number.N3, Piece.KING, PieceColor.WHITE),
-            Square(Letter.E, Number.N6, Piece.KING, PieceColor.BLACK))
+            Square(Letter.E, Number.N6, Piece.KING, PieceColor.BLACK),
+            Square(Letter.F, Number.N5, Piece.ROOK, PieceColor.BLACK))
 
         filledSquares(filledSquares)
     }

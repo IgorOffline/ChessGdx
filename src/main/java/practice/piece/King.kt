@@ -15,16 +15,16 @@ class King {
 
             val oppositeColor = if (kingSquare.pieceColor == PieceColor.WHITE) PieceColor.BLACK else PieceColor.WHITE
 
-            var oppositeKing: Square? = null
+            var oppositeKingSquare: Square? = null
 
             board.board.forEach {
                 if (it.piece == Piece.KING && it.pieceColor == oppositeColor) {
-                    oppositeKing = it
+                    oppositeKingSquare = it
                     return@forEach
                 }
             }
 
-            val illegalMoves = kingMovesInner(oppositeKing!!)
+            val illegalMoves = kingMovesInner(oppositeKingSquare!!)
 
             potentialMoves.removeAll(illegalMoves)
 

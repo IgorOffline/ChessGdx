@@ -1,2 +1,3 @@
 - # of legal moves, if # == 0 checkmate
 - visualize all legal moves on the board
+- black rook F5 "cuts off" whites king
