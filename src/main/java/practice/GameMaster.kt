@@ -1,8 +1,6 @@
 package practice
 
 import practice.board.*
-import practice.board.Number
-import practice.piece.King
 
 data class GameMaster(val board: Board,
                       val legalMoves: LegalMoves,
@@ -12,28 +10,30 @@ data class GameMaster(val board: Board,
                       var whiteKingInCheck: Boolean = false,
                       var blackKingInCheck: Boolean = false) {
 
-    fun equalLetterNumber(letter: Letter, number: Number): Boolean {
-        return Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, number)
-    }
-
     fun movement() {
-        val pieceColorToMove = if (whiteToMove) PieceColor.WHITE else PieceColor.BLACK
-        if (fromSquare!!.piece == Piece.KING && fromSquare!!.pieceColor == pieceColorToMove) {
-            val squares = King.kingMoves(fromSquare!!, board)
-            squares.forEach {
-                if (equalLetterNumber(it.letter, it.number)) {
-                    toSquare!!.piece = fromSquare!!.piece
-                    toSquare!!.pieceColor = pieceColorToMove
-                    fromSquare!!.piece = Piece.NONE
-                    fromSquare!!.pieceColor = PieceColor.NONE
+        legalMoves.legalMoves.keys.forEach { piece ->
+            legalMoves.legalMoves[piece]!!.forEach { pieceLegalMove ->
+                if (toSquareEquals(pieceLegalMove)) {
+                    move()
 
-                    whiteToMove = !whiteToMove
-
-                    legalMoves.calculate(this)
-
-                    return@forEach
+                    return
                 }
             }
         }
+    }
+
+    private fun toSquareEquals(square: Square): Boolean {
+        return Square.letterNumberEqual(toSquare!!.letter, square.letter, toSquare!!.number, square.number)
+    }
+
+    private fun move() {
+        toSquare!!.piece = fromSquare!!.piece
+        toSquare!!.pieceColor = fromSquare!!.pieceColor
+        fromSquare!!.piece = Piece.NONE
+        fromSquare!!.pieceColor = PieceColor.NONE
+
+        whiteToMove = !whiteToMove
+
+        legalMoves.calculate(this)
     }
 }
