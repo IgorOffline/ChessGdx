@@ -5,12 +5,12 @@ import practice.board.Number
 import practice.piece.King
 
 data class GameMaster(val board: Board,
+                      val legalMoves: LegalMoves,
                       var fromSquare: Square? = null,
                       var toSquare: Square? = null,
                       var whiteToMove: Boolean = true,
                       var whiteKingInCheck: Boolean = false,
-                      var blackKingInCheck: Boolean = false,
-                      var blackKingLegalMoves: Int = 0) {
+                      var blackKingInCheck: Boolean = false) {
 
     fun equalLetterNumber(letter: Letter, number: Number): Boolean {
         return Square.letterNumberEqual(toSquare!!.letter, letter, toSquare!!.number, number)
@@ -26,7 +26,11 @@ data class GameMaster(val board: Board,
                     toSquare!!.pieceColor = pieceColorToMove
                     fromSquare!!.piece = Piece.NONE
                     fromSquare!!.pieceColor = PieceColor.NONE
+
                     whiteToMove = !whiteToMove
+
+                    legalMoves.calculate(this)
+
                     return@forEach
                 }
             }

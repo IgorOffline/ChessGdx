@@ -19,8 +19,9 @@ class MyGdxGame : ApplicationAdapter() {
     private var renderUtil: RenderUtil? = null
     private var textures: Textures? = null
     private var board: Board? = null
-    private var myClickListener: MyClickListener? = null
+    private var legalMoves: LegalMoves? = null
     private var gameMaster: GameMaster? = null
+    private var myClickListener: MyClickListener? = null
 
     override fun create() {
 
@@ -37,7 +38,9 @@ class MyGdxGame : ApplicationAdapter() {
 
         textures = Textures()
         board = Board()
-        gameMaster = GameMaster(board!!)
+        legalMoves = LegalMoves(emptyMap())
+        gameMaster = GameMaster(board!!, legalMoves!!)
+        legalMoves!!.calculate(gameMaster!!)
         myClickListener = MyClickListener(board!!, gameMaster!!)
 
         Gdx.input.inputProcessor = myClickListener
@@ -63,9 +66,9 @@ class MyGdxGame : ApplicationAdapter() {
 
         renderUtil!!.renderKingInCheck(spriteBatch!!, gameMaster!!, textures!!)
 
-        spriteBatch!!.begin()
-        font12!!.draw(spriteBatch, "Black king legal moves: " + gameMaster!!.blackKingLegalMoves, 15F, Window.FIXED_HEIGHT - 75F)
-        spriteBatch!!.end()
+        //spriteBatch!!.begin()
+        //font12!!.draw(spriteBatch, "Black king legal moves: " + gameMaster!!.blackKingLegalMoves, 15F, Window.FIXED_HEIGHT - 75F)
+        //spriteBatch!!.end()
     }
 
     private fun fromToString(): String {
