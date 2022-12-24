@@ -25,14 +25,21 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
         var kingLegalMoves = King.kingMoves(king!!, gameMaster.board)
         kingLegalMoves = kingLegalMoves.toMutableList()
 
+        val kingAndRooksLegalMoves = mutableMapOf<Square, List<Square>>()
+
         gameMaster.board.board.forEach { boardSquare ->
-            if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == oppositePieceColor) {
+            if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == pieceColor) {
+                val rookMoves = Rook.rookMoves(boardSquare)
+                kingAndRooksLegalMoves[boardSquare] = rookMoves
+            } else if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == oppositePieceColor) {
                 val oppositeRookMoves = Rook.rookMoves(boardSquare)
                 kingLegalMoves.removeAll(oppositeRookMoves)
             }
         }
 
-        legalMoves = mapOf(king!! to kingLegalMoves)
+        kingAndRooksLegalMoves[king!!] = kingLegalMoves
+
+        legalMoves = kingAndRooksLegalMoves
 
         var legalMovesToStr = "$pieceColor: "
 
