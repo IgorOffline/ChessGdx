@@ -37,7 +37,7 @@ class MyGdxGame : ApplicationAdapter() {
         renderUtil = RenderUtil()
 
         textures = Textures()
-        board = Board()
+        board = Board(emptyList())
         legalMoves = LegalMoves(emptyMap())
         gameMaster = GameMaster(board!!, legalMoves!!)
         legalMoves!!.calculate(gameMaster!!)
