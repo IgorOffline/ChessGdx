@@ -11,8 +11,8 @@ data class GameMaster(val board: Board,
                       var blackKingInCheck: Boolean = false) {
 
     fun movement() {
-        legalMoves.legalMoves.keys.forEach { piece ->
-            legalMoves.legalMoves[piece]!!.forEach { pieceLegalMove ->
+        if (legalMoves.legalMoves.containsKey(fromSquare)) {
+            legalMoves.legalMoves[fromSquare]!!.forEach { pieceLegalMove ->
                 if (toSquareEquals(pieceLegalMove)) {
                     move()
 
