@@ -29,10 +29,10 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
         gameMaster.board.board.forEach { boardSquare ->
             if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == pieceColor) {
-                val rookMoves = Rook.rookMoves(boardSquare)
+                val rookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
                 kingAndRooksLegalMoves[boardSquare] = rookMoves
             } else if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == oppositePieceColor) {
-                val oppositeRookMoves = Rook.rookMoves(boardSquare)
+                val oppositeRookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
                 kingLegalMoves.removeAll(oppositeRookMoves)
             }
         }

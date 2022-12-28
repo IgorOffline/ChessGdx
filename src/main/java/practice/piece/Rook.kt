@@ -1,29 +1,17 @@
 package practice.piece
 
 import practice.board.*
-import practice.board.Number
-import practice.board.ui.LetterNumber
 
 class Rook {
     companion object {
-        fun rookMoves(rookSquare: Square) : List<Square> {
+        fun rookMoves(rookSquare: Square, board: Board) : List<Square> {
 
             val moves = mutableListOf<Square>()
 
-            for (i in rookSquare.letter.index + 1 .. Letter.H.index) {
-                moves.add(Square(LetterNumber.getLetterEnum(i), rookSquare.number, Piece.NONE, PieceColor.NONE))
-            }
+            val squareNullable = board.findNextNumberSquare(rookSquare.letter, rookSquare.number)
 
-            for (i in rookSquare.letter.index - 1 downTo Letter.A.index) {
-                moves.add(Square(LetterNumber.getLetterEnum(i), rookSquare.number, Piece.NONE, PieceColor.NONE))
-            }
-
-            for (i in rookSquare.number.index + 1 .. Number.N8.index) {
-                moves.add(Square(rookSquare.letter, LetterNumber.getNumberEnum(i), Piece.NONE, PieceColor.NONE))
-            }
-
-            for (i in rookSquare.number.index - 1 downTo Number.N1.index) {
-                moves.add(Square(rookSquare.letter, LetterNumber.getNumberEnum(i), Piece.NONE, PieceColor.NONE))
+            squareNullable?.let {
+                moves.add(it)
             }
 
             return moves
