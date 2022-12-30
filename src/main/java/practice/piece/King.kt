@@ -4,7 +4,7 @@ import practice.board.Board
 import practice.board.Piece
 import practice.board.PieceColor
 import practice.board.Square
-import practice.board.ui.LetterNumber
+import practice.board.LetterNumber
 
 class King {
     companion object {

@@ -3,7 +3,7 @@ package practice.piece
 
 import practice.board.*
 import practice.board.Number
-import practice.board.ui.LetterNumber
+import practice.board.LetterNumber
 
 class Rook {
     companion object {

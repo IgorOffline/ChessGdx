@@ -1,12 +1,11 @@
 package practice.board
 
-import practice.board.ui.LetterNumber
-
 class Board(var board: List<Square>) {
 
     init {
         val filledSquares = listOf(
             Square(Letter.E, Number.N3, Piece.KING, PieceColor.WHITE),
+            Square(Letter.F, Number.N2, Piece.ROOK, PieceColor.WHITE),
             Square(Letter.E, Number.N6, Piece.KING, PieceColor.BLACK),
             Square(Letter.F, Number.N5, Piece.ROOK, PieceColor.BLACK))
 

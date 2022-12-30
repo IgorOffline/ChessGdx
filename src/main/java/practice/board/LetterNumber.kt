@@ -1,8 +1,6 @@
-package practice.board.ui
+package practice.board
 
 import practice.Messages
-import practice.board.Letter
-import practice.board.Number
 import java.lang.IllegalArgumentException
 
 class LetterNumber {

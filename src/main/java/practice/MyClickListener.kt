@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.InputAdapter
 import practice.board.*
-import practice.board.ui.LetterNumber
+import practice.board.LetterNumber
 
 class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapter() {
 
