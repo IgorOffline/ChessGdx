@@ -10,6 +10,8 @@ class Rook {
 
             list.addAll(findNextNumberSquare(rookSquare, board))
             list.addAll(findPreviousNumberSquare(rookSquare, board))
+            list.addAll(findNextLetterSquare(rookSquare, board))
+            list.addAll(findPreviousLetterSquare(rookSquare, board))
 
             return list
         }
@@ -38,6 +40,38 @@ class Rook {
 
             do {
                 squareNullable = board.findPreviousNumberSquare(squareNullable!!.letter, squareNullable.number)
+                squareNullable?.let {
+                    moves.add(it)
+                }
+            } while (squareNullable != null)
+
+            return moves
+        }
+
+        private fun findNextLetterSquare(rookSquare: Square, board: Board) : List<Square> {
+
+            val moves = mutableListOf<Square>()
+
+            var squareNullable : Square? = Square(rookSquare.letter, rookSquare.number, Piece.NONE, PieceColor.NONE)
+
+            do {
+                squareNullable = board.findNextLetterSquare(squareNullable!!.letter, squareNullable.number)
+                squareNullable?.let {
+                    moves.add(it)
+                }
+            } while (squareNullable != null)
+
+            return moves
+        }
+
+        private fun findPreviousLetterSquare(rookSquare: Square, board: Board) : List<Square> {
+
+            val moves = mutableListOf<Square>()
+
+            var squareNullable : Square? = Square(rookSquare.letter, rookSquare.number, Piece.NONE, PieceColor.NONE)
+
+            do {
+                squareNullable = board.findPreviousLetterSquare(squareNullable!!.letter, squareNullable.number)
                 squareNullable?.let {
                     moves.add(it)
                 }
