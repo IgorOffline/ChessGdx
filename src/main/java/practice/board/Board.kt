@@ -38,9 +38,15 @@ class Board(var board: List<Square>) {
 
         board = boardMutable
 
+        println("--- findNextNumberSquare ---")
         board.forEach {
             println("${it.letter}${it.number}:${findNextNumberSquare(it.letter, it.number)}")
         }
+        println("--- findPreviousNumberSquare ---")
+        board.forEach {
+            println("${it.letter}${it.number}:${findPreviousNumberSquare(it.letter, it.number)}")
+        }
+        println("--- ---")
     }
 
     fun squareFound(i: Int, j: Int, square: Square): Boolean {
@@ -52,6 +58,16 @@ class Board(var board: List<Square>) {
 
     fun findNextNumberSquare(letter: Letter, number: Number): Square? {
         val nextNumberIndex = number.index + 1
+        if (LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nextNumberIndex))) {
+            val squareIndex = (8 * (7 - nextNumberIndex)) + letter.index
+            return board[squareIndex]
+        }
+
+        return null
+    }
+
+    fun findPreviousNumberSquare(letter: Letter, number: Number): Square? {
+        val nextNumberIndex = number.index - 1
         if (LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nextNumberIndex))) {
             val squareIndex = (8 * (7 - nextNumberIndex)) + letter.index
             return board[squareIndex]

@@ -47,6 +47,6 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             legalMovesToStr += "${legalMoves[it]!!.size}, "
         }
 
-        println("$legalMovesToStr")
+        println(legalMovesToStr)
     }
 }
