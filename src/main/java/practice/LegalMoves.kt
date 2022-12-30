@@ -22,8 +22,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             }
         }
 
-        var kingLegalMoves = King.kingMoves(king!!, gameMaster.board)
-        kingLegalMoves = kingLegalMoves.toMutableList()
+        val kingLegalMoves = King.kingMoves(king!!, gameMaster.board).toMutableList()
 
         val kingAndRooksLegalMoves = mutableMapOf<Square, List<Square>>()
 
@@ -31,6 +30,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == pieceColor) {
                 val rookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
                 kingAndRooksLegalMoves[boardSquare] = rookMoves
+                kingLegalMoves.removeIf { it.letter == boardSquare.letter && it.number == boardSquare.number }
             } else if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == oppositePieceColor) {
                 val oppositeRookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
                 kingLegalMoves.removeAll(oppositeRookMoves)
