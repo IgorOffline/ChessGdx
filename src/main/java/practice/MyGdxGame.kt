@@ -39,10 +39,10 @@ class MyGdxGame : ApplicationAdapter() {
         textures = Textures()
 
         val filledSquares = listOf(
-            Square(Letter.E, practice.board.Number.N3, Piece.KING, PieceColor.WHITE),
-            Square(Letter.F, practice.board.Number.N2, Piece.ROOK, PieceColor.WHITE),
-            Square(Letter.E, practice.board.Number.N6, Piece.KING, PieceColor.BLACK),
-            Square(Letter.F, practice.board.Number.N5, Piece.ROOK, PieceColor.BLACK)
+            Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
+            Square(Letter.F, Number2.N2, Piece.ROOK, PieceColor.WHITE),
+            Square(Letter.E, Number2.N6, Piece.KING, PieceColor.BLACK),
+            Square(Letter.F, Number2.N5, Piece.ROOK, PieceColor.BLACK)
         )
 
         board = Board(emptyList())

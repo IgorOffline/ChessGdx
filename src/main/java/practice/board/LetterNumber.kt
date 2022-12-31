@@ -47,34 +47,34 @@ class LetterNumber {
                 else -> throw IllegalArgumentException(Messages.UNKNOWN_NUMBER)
             }
         }
-        fun getNumberEnum(number: Int): Number {
+        fun getNumberEnum(number: Int): Number2 {
             return when (number) {
-                -1 -> Number.NMinus1
-                0 -> Number.N1
-                1 -> Number.N2
-                2 -> Number.N3
-                3 -> Number.N4
-                4 -> Number.N5
-                5 -> Number.N6
-                6 -> Number.N7
-                7 -> Number.N8
-                8 -> Number.N99
+                -1 -> Number2.NMinus1
+                0 -> Number2.N1
+                1 -> Number2.N2
+                2 -> Number2.N3
+                3 -> Number2.N4
+                4 -> Number2.N5
+                5 -> Number2.N6
+                6 -> Number2.N7
+                7 -> Number2.N8
+                8 -> Number2.N99
                 else -> throw IllegalArgumentException(Messages.UNKNOWN_NUMBER)
             }
         }
 
-        fun getNumberEnumReverse(number: Int): Number {
+        fun getNumberEnumReverse(number: Int): Number2 {
             return when (number) {
-                -1 -> Number.N99
-                0 -> Number.N8
-                1 -> Number.N7
-                2 -> Number.N6
-                3 -> Number.N5
-                4 -> Number.N4
-                5 -> Number.N3
-                6 -> Number.N2
-                7 -> Number.N1
-                8 -> Number.NMinus1
+                -1 -> Number2.N99
+                0 -> Number2.N8
+                1 -> Number2.N7
+                2 -> Number2.N6
+                3 -> Number2.N5
+                4 -> Number2.N4
+                5 -> Number2.N3
+                6 -> Number2.N2
+                7 -> Number2.N1
+                8 -> Number2.NMinus1
                 else -> throw IllegalArgumentException(Messages.UNKNOWN_NUMBER)
             }
         }
@@ -83,7 +83,7 @@ class LetterNumber {
             return letter.index in 0..7
         }
 
-        fun isEnumLegal(number: Number): Boolean {
+        fun isEnumLegal(number: Number2): Boolean {
             return number.index in 0..7
         }
     }

@@ -53,7 +53,7 @@ class Board(var board: List<Square>) {
         return false
     }
 
-    fun findNextNumberSquare(letter: Letter, number: Number): Square? {
+    fun findNextNumberSquare(letter: Letter, number: Number2): Square? {
         val nextNumberIndex = number.index + 1
         if (LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nextNumberIndex))) {
             val squareIndex = (8 * (7 - nextNumberIndex)) + letter.index
@@ -63,7 +63,7 @@ class Board(var board: List<Square>) {
         return null
     }
 
-    fun findPreviousNumberSquare(letter: Letter, number: Number): Square? {
+    fun findPreviousNumberSquare(letter: Letter, number: Number2): Square? {
         val previousNumberIndex = number.index - 1
         if (LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(previousNumberIndex))) {
             val squareIndex = (8 * (7 - previousNumberIndex)) + letter.index
@@ -73,7 +73,7 @@ class Board(var board: List<Square>) {
         return null
     }
 
-    fun findNextLetterSquare(letter: Letter, number: Number): Square? {
+    fun findNextLetterSquare(letter: Letter, number: Number2): Square? {
         val nextLetterIndex = letter.index + 1
         if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nextLetterIndex))) {
             val squareIndex = (8 * (7 - number.index)) + nextLetterIndex
@@ -83,7 +83,7 @@ class Board(var board: List<Square>) {
         return null
     }
 
-    fun findPreviousLetterSquare(letter: Letter, number: Number): Square? {
+    fun findPreviousLetterSquare(letter: Letter, number: Number2): Square? {
         val previousLetterIndex = letter.index - 1
         if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(previousLetterIndex))) {
             val squareIndex = (8 * (7 - number.index)) + previousLetterIndex
