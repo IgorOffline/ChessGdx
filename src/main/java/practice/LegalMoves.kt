@@ -44,12 +44,12 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
         kingAndRooksLegalMoves[king!!] = kingLegalMoves
 
         if (gameMaster.whiteKingInCheck && firstCalculation) {
-            val newBoard = gameMaster.board.deepCopy()
-            val newLegalMoves = LegalMoves(emptyMap())
-            val newGameMaster = GameMaster(newBoard, newLegalMoves)
-            val kingNewBoard = newBoard.board.find { it.letter == king!!.letter && it.number == king!!.number }
             val illegalMoves = mutableListOf<Square>()
             kingLegalMoves.forEach { kingLegalMove ->
+                val newBoard = gameMaster.board.deepCopy()
+                val newLegalMoves = LegalMoves(emptyMap())
+                val newGameMaster = GameMaster(newBoard, newLegalMoves)
+                val kingNewBoard = newBoard.board.find { it.letter == king!!.letter && it.number == king!!.number }
                 newGameMaster.fromSquare = kingNewBoard!!
                 val toSquareNewBoard = newBoard.board.find { it.letter == kingLegalMove.letter && it.number == kingLegalMove.number }
                 newGameMaster.toSquare = toSquareNewBoard!!
