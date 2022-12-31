@@ -2,6 +2,17 @@ package practice.board
 
 class Board(var board: List<Square>) {
 
+    companion object {
+        fun defaultSquares(): List<Square> {
+            return listOf(
+                Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
+                Square(Letter.F, Number2.N2, Piece.ROOK, PieceColor.WHITE),
+                Square(Letter.E, Number2.N6, Piece.KING, PieceColor.BLACK),
+                Square(Letter.F, Number2.N5, Piece.ROOK, PieceColor.BLACK)
+            )
+        }
+    }
+
     fun createBoard(filledSquares: List<Square>) {
 
         val boardMutable = mutableListOf<Square>()

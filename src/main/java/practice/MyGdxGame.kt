@@ -38,15 +38,8 @@ class MyGdxGame : ApplicationAdapter() {
 
         textures = Textures()
 
-        val filledSquares = listOf(
-            Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
-            Square(Letter.F, Number2.N2, Piece.ROOK, PieceColor.WHITE),
-            Square(Letter.E, Number2.N6, Piece.KING, PieceColor.BLACK),
-            Square(Letter.F, Number2.N5, Piece.ROOK, PieceColor.BLACK)
-        )
-
         board = Board(emptyList())
-        board!!.createBoard(filledSquares)
+        board!!.createBoard(Board.defaultSquares())
         legalMoves = LegalMoves(emptyMap())
         gameMaster = GameMaster(board!!, legalMoves!!)
         legalMoves!!.calculate(gameMaster!!, true)
