@@ -13,6 +13,9 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
         val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
         val oppositePieceColor = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
 
+        gameMaster.whiteKingInCheck = false
+        gameMaster.blackKingInCheck = false
+
         var king: Square? = null
 
         gameMaster.board.board.forEach {
@@ -29,11 +32,15 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
         gameMaster.board.board.forEach { boardSquare ->
             if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == pieceColor) {
                 val rookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
-                kingAndRooksLegalMoves[boardSquare] = rookMoves
+                kingAndRooksLegalMoves[boardSquare] = rookMoves.squares
+                if (rookMoves.opponentsKingInCheck) {
+                    gameMaster.whiteKingInCheck = pieceColor == PieceColor.WHITE
+                    gameMaster.blackKingInCheck = pieceColor == PieceColor.BLACK
+                }
                 kingLegalMoves.removeIf { it.letter == boardSquare.letter && it.number == boardSquare.number }
             } else if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == oppositePieceColor) {
                 val oppositeRookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
-                kingLegalMoves.removeAll(oppositeRookMoves)
+                kingLegalMoves.removeAll(oppositeRookMoves.squares)
             }
         }
 
