@@ -49,7 +49,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
             phase1LegalMoves.keys.forEach { piece ->
                 val legalMoves = phase1LegalMoves[piece]!!
-                val prunedMoves = pruneMoves(gameMaster, legalMoves, piece, pieceColor)
+                val prunedMoves = pruneMoves(gameMaster, legalMoves, piece)
                 phase2LegalMoves[piece] = prunedMoves
             }
 
@@ -68,7 +68,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
         println("$legalMovesToStr, white/blackKingInCheck= ${gameMaster.whiteKingInCheck}/${gameMaster.blackKingInCheck}")
     }
 
-    private fun pruneMoves(gameMaster: GameMaster, legalMoves: List<Square>, piece: Square, pieceColor: PieceColor): MutableList<Square> {
+    private fun pruneMoves(gameMaster: GameMaster, legalMoves: List<Square>, piece: Square): MutableList<Square> {
 
         val prunedMoves = mutableListOf<Square>()
 
@@ -81,10 +81,10 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             val toSquareNewBoard = newBoard.board.find { it.letter == legalMove.letter && it.number == legalMove.number }
             newGameMaster.toSquare = toSquareNewBoard!!
             newGameMaster.move()
-            Pruning.prune(newGameMaster, pieceColor)
+            Pruning.prune(newGameMaster, piece.pieceColor)
 
-            val pruneWhite = pieceColor == PieceColor.WHITE && !newGameMaster.whiteKingInCheck
-            val pruneBlack = pieceColor == PieceColor.BLACK && !newGameMaster.blackKingInCheck
+            val pruneWhite = piece.pieceColor == PieceColor.WHITE && !newGameMaster.whiteKingInCheck
+            val pruneBlack = piece.pieceColor == PieceColor.BLACK && !newGameMaster.blackKingInCheck
 
             if (pruneWhite || pruneBlack) {
                 prunedMoves.add(toSquareNewBoard)
