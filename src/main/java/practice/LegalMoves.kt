@@ -5,7 +5,7 @@ import practice.piece.*
 
 data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
-    fun calculate(gameMaster: GameMaster, firstCalculation: Boolean) {
+    fun calculate(gameMaster: GameMaster) {
 
         val phase1LegalMoves = mutableMapOf<Square, List<Square>>()
         val phase2LegalMoves = mutableMapOf<Square, List<Square>>()
@@ -44,7 +44,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
         phase1LegalMoves[king!!] = kingLegalMoves
 
-        if (firstCalculation && (gameMaster.whiteKingInCheck || gameMaster.blackKingInCheck)) {
+        if (gameMaster.whiteKingInCheck || gameMaster.blackKingInCheck) {
 
             phase1LegalMoves.keys.forEach { piece ->
                 val legalMoves = phase1LegalMoves[piece]!!
@@ -58,15 +58,13 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             legalMoves = phase1LegalMoves
         }
 
-        if (firstCalculation) {
-            var legalMovesToStr = "$pieceColor: "
+        var legalMovesToStr = "$pieceColor: "
 
-            legalMoves.keys.forEach {
-                legalMovesToStr += "${legalMoves[it]!!.size}, "
-            }
-
-            println("$legalMovesToStr, white/blackKingInCheck= ${gameMaster.whiteKingInCheck}/${gameMaster.blackKingInCheck}")
+        legalMoves.keys.forEach {
+            legalMovesToStr += "${legalMoves[it]!!.size}, "
         }
+
+        println("$legalMovesToStr, white/blackKingInCheck= ${gameMaster.whiteKingInCheck}/${gameMaster.blackKingInCheck}")
     }
 
     private fun pruneMoves(gameMaster: GameMaster, legalMoves: List<Square>, king: Square, pieceColor: PieceColor): MutableList<Square> {
@@ -82,7 +80,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             val toSquareNewBoard = newBoard.board.find { it.letter == legalMove.letter && it.number == legalMove.number }
             newGameMaster.toSquare = toSquareNewBoard!!
             newGameMaster.move()
-            newLegalMoves.calculate(newGameMaster, false)
+            Pruning.prune(newGameMaster, pieceColor)
 
             val pruneWhite = pieceColor == PieceColor.WHITE && !newGameMaster.whiteKingInCheck
             val pruneBlack = pieceColor == PieceColor.BLACK && !newGameMaster.blackKingInCheck

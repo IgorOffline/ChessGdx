@@ -41,6 +41,6 @@ data class GameMaster(val board: Board,
     private fun calculate() {
         whiteToMove = !whiteToMove
 
-        legalMoves.calculate(this, true)
+        legalMoves.calculate(this)
     }
 }

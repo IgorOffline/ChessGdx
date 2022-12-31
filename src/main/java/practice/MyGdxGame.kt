@@ -42,7 +42,7 @@ class MyGdxGame : ApplicationAdapter() {
         board!!.createBoard(Board.defaultSquares())
         legalMoves = LegalMoves(emptyMap())
         gameMaster = GameMaster(board!!, legalMoves!!)
-        legalMoves!!.calculate(gameMaster!!, true)
+        legalMoves!!.calculate(gameMaster!!)
         myClickListener = MyClickListener(board!!, gameMaster!!)
 
         Gdx.input.inputProcessor = myClickListener
