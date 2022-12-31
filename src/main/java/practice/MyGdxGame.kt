@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.ScreenUtils
 import practice.board.*
+import practice.legal.LegalMoves
 import practice.ui.Window
 
 class MyGdxGame : ApplicationAdapter() {

@@ -1,5 +1,6 @@
-package practice
+package practice.legal
 
+import practice.GameMaster
 import practice.board.*
 import practice.piece.*
 

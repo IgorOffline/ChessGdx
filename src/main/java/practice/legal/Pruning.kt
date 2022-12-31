@@ -1,5 +1,7 @@
-package practice
+package practice.legal
 
+import practice.GameMaster
+import practice.Messages
 import practice.board.Piece
 import practice.board.PieceColor
 import practice.piece.Rook

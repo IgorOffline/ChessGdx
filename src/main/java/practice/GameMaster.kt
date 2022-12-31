@@ -1,6 +1,7 @@
 package practice
 
 import practice.board.*
+import practice.legal.LegalMoves
 
 data class GameMaster(val board: Board,
                       val legalMoves: LegalMoves,
