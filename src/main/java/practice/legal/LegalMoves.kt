@@ -45,8 +45,9 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
         phase1LegalMoves[king!!] = kingLegalMoves
 
-        if (gameMaster.whiteKingInCheck || gameMaster.blackKingInCheck) {
-
+        if (!gameMaster.whiteKingInCheck && !gameMaster.blackKingInCheck) {
+            legalMoves = phase1LegalMoves
+        } else {
             phase1LegalMoves.keys.forEach { piece ->
                 val legalMoves = phase1LegalMoves[piece]!!
                 val prunedMoves = pruneMoves(gameMaster, legalMoves, piece)
@@ -55,8 +56,7 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
             legalMoves = phase2LegalMoves
 
-        } else {
-            legalMoves = phase1LegalMoves
+            checkmateCheck(gameMaster)
         }
 
         var legalMovesToStr = "$pieceColor: "
@@ -92,5 +92,20 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
         }
 
         return prunedMoves
+    }
+
+    private fun checkmateCheck(gameMaster: GameMaster) {
+
+        var legalMovesCounter = 0
+
+        legalMoves.values.forEach { piecesLegalMoves -> legalMovesCounter += piecesLegalMoves.size }
+
+        if (legalMovesCounter == 0) {
+            if (gameMaster.whiteKingInCheck) {
+                gameMaster.whiteKingCheckmated = true
+            } else {
+                gameMaster.blackKingCheckmated = true
+            }
+        }
     }
 }

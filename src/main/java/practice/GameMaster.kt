@@ -9,7 +9,9 @@ data class GameMaster(val board: Board,
                       var toSquare: Square? = null,
                       var whiteToMove: Boolean = true,
                       var whiteKingInCheck: Boolean = false,
-                      var blackKingInCheck: Boolean = false) {
+                      var blackKingInCheck: Boolean = false,
+                      var whiteKingCheckmated: Boolean = false,
+                      var blackKingCheckmated: Boolean = false) {
 
     fun moveAndCalculate() {
         if (legalMoves.legalMoves.containsKey(fromSquare)) {

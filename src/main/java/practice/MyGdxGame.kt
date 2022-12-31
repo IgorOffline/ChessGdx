@@ -69,6 +69,8 @@ class MyGdxGame : ApplicationAdapter() {
 
         renderUtil!!.renderKingInCheck(spriteBatch!!, gameMaster!!, textures!!)
 
+        renderUtil!!.renderKingInCheckmate(spriteBatch!!, gameMaster!!, textures!!)
+
         //spriteBatch!!.begin()
         //font12!!.draw(spriteBatch, "Black king legal moves: " + gameMaster!!.blackKingLegalMoves, 15F, Window.FIXED_HEIGHT - 75F)
         //spriteBatch!!.end()

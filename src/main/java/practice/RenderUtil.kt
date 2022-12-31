@@ -111,8 +111,8 @@ class RenderUtil {
     }
 
     fun renderSideToMove(spriteBatch: SpriteBatch, gameMaster: GameMaster, textures: Textures) {
-        spriteBatch.begin()
         val texture = if (gameMaster.whiteToMove) textures.txWK!! else textures.txBK!!
+        spriteBatch.begin()
         spriteBatch.draw(texture, 16F, Window.FIXED_HEIGHT - 65F, textureSize, textureSize)
         spriteBatch.end()
     }
@@ -121,11 +121,25 @@ class RenderUtil {
         val x = 53F
         val y = Window.FIXED_HEIGHT - 65F
 
-        if (gameMaster.whiteKingInCheck) {
+        renderCheckOrCheckmate(spriteBatch, textures, x, y, gameMaster.whiteKingInCheck, gameMaster.blackKingInCheck)
+    }
+
+    fun renderKingInCheckmate(spriteBatch: SpriteBatch, gameMaster: GameMaster, textures: Textures) {
+        val x = 90F
+        val y = Window.FIXED_HEIGHT - 65F
+
+        renderCheckOrCheckmate(spriteBatch, textures, x, y, gameMaster.whiteKingCheckmated, gameMaster.blackKingCheckmated)
+    }
+
+    private fun renderCheckOrCheckmate(spriteBatch: SpriteBatch, textures: Textures,
+                                       x: Float, y: Float,
+                                       whiteCheckedOrCheckmated: Boolean, blackCheckedOrCheckmated: Boolean) {
+
+        if (whiteCheckedOrCheckmated) {
             spriteBatch.begin()
             spriteBatch.draw(textures.txWK!!, x, y, textureSize, textureSize)
             spriteBatch.end()
-        } else if (gameMaster.blackKingInCheck) {
+        } else if (blackCheckedOrCheckmated) {
             spriteBatch.begin()
             spriteBatch.draw(textures.txBK!!, x, y, textureSize, textureSize)
             spriteBatch.end()
