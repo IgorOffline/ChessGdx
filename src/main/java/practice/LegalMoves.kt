@@ -7,6 +7,9 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
     fun calculate(gameMaster: GameMaster, firstCalculation: Boolean) {
 
+        val phase1LegalMoves = mutableMapOf<Square, List<Square>>()
+        val phase2LegalMoves = mutableMapOf<Square, List<Square>>()
+
         val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
         val oppositePieceColor = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
 
@@ -24,12 +27,10 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
         val kingLegalMoves = King.kingMoves(king!!, gameMaster.board).toMutableList()
 
-        val kingAndRooksLegalMoves = mutableMapOf<Square, List<Square>>()
-
         gameMaster.board.board.forEach { boardSquare ->
             if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == pieceColor) {
                 val rookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
-                kingAndRooksLegalMoves[boardSquare] = rookMoves.squares
+                phase1LegalMoves[boardSquare] = rookMoves.squares
                 kingLegalMoves.removeIf { it.letter == boardSquare.letter && it.number == boardSquare.number }
             } else if (boardSquare.piece == Piece.ROOK && boardSquare.pieceColor == oppositePieceColor) {
                 val oppositeRookMoves = Rook.rookMoves(boardSquare, gameMaster.board)
@@ -41,37 +42,21 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
             }
         }
 
-        kingAndRooksLegalMoves[king!!] = kingLegalMoves
+        phase1LegalMoves[king!!] = kingLegalMoves
 
-        if (gameMaster.whiteKingInCheck && firstCalculation) {
-            val illegalMoves = mutableListOf<Square>()
-            kingLegalMoves.forEach { kingLegalMove ->
-                val newBoard = gameMaster.board.deepCopy()
-                val newLegalMoves = LegalMoves(emptyMap())
-                val newGameMaster = GameMaster(newBoard, newLegalMoves)
-                val kingNewBoard = newBoard.board.find { it.letter == king!!.letter && it.number == king!!.number }
-                newGameMaster.fromSquare = kingNewBoard!!
-                val toSquareNewBoard = newBoard.board.find { it.letter == kingLegalMove.letter && it.number == kingLegalMove.number }
-                newGameMaster.toSquare = toSquareNewBoard!!
-                //println("${newGameMaster.fromSquare}, ${newGameMaster.toSquare}")
-                newGameMaster.move()
-                newLegalMoves.calculate(newGameMaster, false)
-                if (newGameMaster.whiteKingInCheck) {
-                    illegalMoves.add(toSquareNewBoard)
-                }
-            }
-            if (illegalMoves.isNotEmpty()) {
-                illegalMoves.forEach { illegalMove ->
-                    val kingLegalMove = kingLegalMoves.find { it.letter == illegalMove.letter && it.number == illegalMove.number }
-                    kingLegalMoves.remove(kingLegalMove)
-                    println("illegalMove= $kingLegalMove")
-                }
+        if (firstCalculation && (gameMaster.whiteKingInCheck || gameMaster.blackKingInCheck)) {
 
-                kingAndRooksLegalMoves[king!!] = kingLegalMoves
+            phase1LegalMoves.keys.forEach { piece ->
+                val legalMoves = phase1LegalMoves[piece]!!
+                val prunedMoves = pruneMoves(gameMaster, legalMoves, king!!, pieceColor)
+                phase2LegalMoves[piece] = prunedMoves
             }
+
+            legalMoves = phase2LegalMoves
+
+        } else {
+            legalMoves = phase1LegalMoves
         }
-
-        legalMoves = kingAndRooksLegalMoves
 
         if (firstCalculation) {
             var legalMovesToStr = "$pieceColor: "
@@ -82,5 +67,31 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
             println("$legalMovesToStr, white/blackKingInCheck= ${gameMaster.whiteKingInCheck}/${gameMaster.blackKingInCheck}")
         }
+    }
+
+    private fun pruneMoves(gameMaster: GameMaster, legalMoves: List<Square>, king: Square, pieceColor: PieceColor): MutableList<Square> {
+
+        val prunedMoves = mutableListOf<Square>()
+
+        legalMoves.forEach { legalMove ->
+            val newBoard = gameMaster.board.deepCopy()
+            val newLegalMoves = LegalMoves(emptyMap())
+            val newGameMaster = GameMaster(newBoard, newLegalMoves)
+            val kingNewBoard = newBoard.board.find { it.letter == king.letter && it.number == king.number }
+            newGameMaster.fromSquare = kingNewBoard!!
+            val toSquareNewBoard = newBoard.board.find { it.letter == legalMove.letter && it.number == legalMove.number }
+            newGameMaster.toSquare = toSquareNewBoard!!
+            newGameMaster.move()
+            newLegalMoves.calculate(newGameMaster, false)
+
+            val pruneWhite = pieceColor == PieceColor.WHITE && !newGameMaster.whiteKingInCheck
+            val pruneBlack = pieceColor == PieceColor.BLACK && !newGameMaster.blackKingInCheck
+
+            if (pruneWhite || pruneBlack) {
+                prunedMoves.add(toSquareNewBoard)
+            }
+        }
+
+        return prunedMoves
     }
 }
