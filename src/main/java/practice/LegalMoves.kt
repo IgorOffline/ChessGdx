@@ -1,14 +1,11 @@
 package practice
 
-import practice.board.Piece
-import practice.board.PieceColor
-import practice.board.Square
-import practice.piece.King
-import practice.piece.Rook
+import practice.board.*
+import practice.piece.*
 
 data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
-    fun calculate(gameMaster: GameMaster) {
+    fun calculate(gameMaster: GameMaster, firstCalculation: Boolean) {
 
         val pieceColor = if (gameMaster.whiteToMove) PieceColor.WHITE else PieceColor.BLACK
         val oppositePieceColor = if (gameMaster.whiteToMove) PieceColor.BLACK else PieceColor.WHITE
@@ -46,14 +43,44 @@ data class LegalMoves(var legalMoves: Map<Square, List<Square>>) {
 
         kingAndRooksLegalMoves[king!!] = kingLegalMoves
 
-        legalMoves = kingAndRooksLegalMoves
+        if (gameMaster.whiteKingInCheck && firstCalculation) {
+            val newBoard = gameMaster.board.deepCopy()
+            val newLegalMoves = LegalMoves(emptyMap())
+            val newGameMaster = GameMaster(newBoard, newLegalMoves)
+            val kingNewBoard = newBoard.board.find { it.letter == king!!.letter && it.number == king!!.number }
+            val illegalMoves = mutableListOf<Square>()
+            kingLegalMoves.forEach { kingLegalMove ->
+                newGameMaster.fromSquare = kingNewBoard!!
+                val toSquareNewBoard = newBoard.board.find { it.letter == kingLegalMove.letter && it.number == kingLegalMove.number }
+                newGameMaster.toSquare = toSquareNewBoard!!
+                //println("${newGameMaster.fromSquare}, ${newGameMaster.toSquare}")
+                newGameMaster.move()
+                newLegalMoves.calculate(newGameMaster, false)
+                if (newGameMaster.whiteKingInCheck) {
+                    illegalMoves.add(toSquareNewBoard)
+                }
+            }
+            if (illegalMoves.isNotEmpty()) {
+                illegalMoves.forEach { illegalMove ->
+                    val kingLegalMove = kingLegalMoves.find { it.letter == illegalMove.letter && it.number == illegalMove.number }
+                    kingLegalMoves.remove(kingLegalMove)
+                    println("illegalMove= $kingLegalMove")
+                }
 
-        var legalMovesToStr = "$pieceColor: "
-
-        legalMoves.keys.forEach {
-            legalMovesToStr += "${legalMoves[it]!!.size}, "
+                kingAndRooksLegalMoves[king!!] = kingLegalMoves
+            }
         }
 
-        println("$legalMovesToStr, white/blackKingInCheck= ${gameMaster.whiteKingInCheck}/${gameMaster.blackKingInCheck}")
+        legalMoves = kingAndRooksLegalMoves
+
+        if (firstCalculation) {
+            var legalMovesToStr = "$pieceColor: "
+
+            legalMoves.keys.forEach {
+                legalMovesToStr += "${legalMoves[it]!!.size}, "
+            }
+
+            println("$legalMovesToStr, white/blackKingInCheck= ${gameMaster.whiteKingInCheck}/${gameMaster.blackKingInCheck}")
+        }
     }
 }

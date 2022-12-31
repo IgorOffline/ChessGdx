@@ -10,11 +10,11 @@ data class GameMaster(val board: Board,
                       var whiteKingInCheck: Boolean = false,
                       var blackKingInCheck: Boolean = false) {
 
-    fun movement() {
+    fun moveAndCalculate() {
         if (legalMoves.legalMoves.containsKey(fromSquare)) {
             legalMoves.legalMoves[fromSquare]!!.forEach { pieceLegalMove ->
                 if (toSquareEquals(pieceLegalMove)) {
-                    move()
+                    moveAndCalculateInner()
 
                     return
                 }
@@ -26,14 +26,21 @@ data class GameMaster(val board: Board,
         return Square.letterNumberEqual(toSquare!!.letter, square.letter, toSquare!!.number, square.number)
     }
 
-    private fun move() {
+    private fun moveAndCalculateInner() {
+        move()
+        calculate()
+    }
+
+    fun move() {
         toSquare!!.piece = fromSquare!!.piece
         toSquare!!.pieceColor = fromSquare!!.pieceColor
         fromSquare!!.piece = Piece.NONE
         fromSquare!!.pieceColor = PieceColor.NONE
+    }
 
+    private fun calculate() {
         whiteToMove = !whiteToMove
 
-        legalMoves.calculate(this)
+        legalMoves.calculate(this, true)
     }
 }

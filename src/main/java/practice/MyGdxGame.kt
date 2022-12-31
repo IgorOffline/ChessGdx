@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.utils.ScreenUtils
-import practice.board.Board
+import practice.board.*
 import practice.ui.Window
 
 class MyGdxGame : ApplicationAdapter() {
@@ -37,10 +37,19 @@ class MyGdxGame : ApplicationAdapter() {
         renderUtil = RenderUtil()
 
         textures = Textures()
+
+        val filledSquares = listOf(
+            Square(Letter.E, practice.board.Number.N3, Piece.KING, PieceColor.WHITE),
+            Square(Letter.F, practice.board.Number.N2, Piece.ROOK, PieceColor.WHITE),
+            Square(Letter.E, practice.board.Number.N6, Piece.KING, PieceColor.BLACK),
+            Square(Letter.F, practice.board.Number.N5, Piece.ROOK, PieceColor.BLACK)
+        )
+
         board = Board(emptyList())
+        board!!.createBoard(filledSquares)
         legalMoves = LegalMoves(emptyMap())
         gameMaster = GameMaster(board!!, legalMoves!!)
-        legalMoves!!.calculate(gameMaster!!)
+        legalMoves!!.calculate(gameMaster!!, true)
         myClickListener = MyClickListener(board!!, gameMaster!!)
 
         Gdx.input.inputProcessor = myClickListener

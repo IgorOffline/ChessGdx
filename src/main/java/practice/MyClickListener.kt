@@ -79,7 +79,7 @@ class MyClickListener(val board: Board, val gameMaster: GameMaster) : InputAdapt
                 gameMaster.fromSquare = square
             } else {
                 gameMaster.toSquare = square
-                gameMaster.movement()
+                gameMaster.moveAndCalculate()
             }
         }
     }
