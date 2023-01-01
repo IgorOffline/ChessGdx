@@ -4,11 +4,17 @@ class Board(var board: List<Square>) {
 
     companion object {
         fun defaultSquares(): List<Square> {
+//            return listOf(
+//                Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
+//                Square(Letter.F, Number2.N2, Piece.ROOK, PieceColor.WHITE),
+//                Square(Letter.E, Number2.N6, Piece.KING, PieceColor.BLACK),
+//                Square(Letter.C, Number2.N5, Piece.ROOK, PieceColor.BLACK)
+//            )
             return listOf(
-                Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
+                Square(Letter.F, Number2.N4, Piece.KING, PieceColor.WHITE),
                 Square(Letter.F, Number2.N2, Piece.ROOK, PieceColor.WHITE),
                 Square(Letter.E, Number2.N6, Piece.KING, PieceColor.BLACK),
-                Square(Letter.C, Number2.N5, Piece.ROOK, PieceColor.BLACK)
+                Square(Letter.C, Number2.N1, Piece.ROOK, PieceColor.BLACK)
             )
         }
     }

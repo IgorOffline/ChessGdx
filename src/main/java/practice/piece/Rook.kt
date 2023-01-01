@@ -5,7 +5,7 @@ import practice.piece.movement.*
 
 class Rook {
     companion object {
-        fun rookMoves(rookSquare: Square, board: Board) : MovementOpponentCheck {
+        fun rookMoves(rookSquare: Square, board: Board): MovementOpponentCheck {
 
             val list = mutableListOf<Square>()
 
@@ -21,13 +21,15 @@ class Rook {
             return MovementOpponentCheck(list, opponentsKingInCheck)
         }
 
-        private fun findSquare(rookSquare: Square, board: Board, rookMovement: RookMovement) : MovementContact {
+        private fun findSquare(rookSquare: Square, board: Board, rookMovement: RookMovement): MovementContact {
 
             val moves = mutableListOf<Square>()
 
-            val oppositePieceColor = if (rookSquare.pieceColor == PieceColor.WHITE) PieceColor.BLACK else PieceColor.WHITE
+            val pieceColor = if (rookSquare.pieceColor == PieceColor.WHITE) PieceColor.WHITE else PieceColor.BLACK
+            val oppositePieceColor =
+                if (rookSquare.pieceColor == PieceColor.WHITE) PieceColor.BLACK else PieceColor.WHITE
 
-            var square : Square? = Square(rookSquare.letter, rookSquare.number, Piece.NONE, PieceColor.NONE)
+            var square: Square? = Square(rookSquare.letter, rookSquare.number, Piece.NONE, PieceColor.NONE)
             var contact = Contact.NONE
 
             do {
@@ -40,14 +42,17 @@ class Rook {
                 square?.let {
                     if (square.piece == Piece.NONE) {
                         moves.add(it)
-                    }
-                    if (square.pieceColor == oppositePieceColor) {
+                    } else if (square.pieceColor == pieceColor) {
+                        contact = Contact.FRIENDLY
+                    } else if (square.pieceColor == oppositePieceColor) {
                         contact = if (square.piece == Piece.KING) {
                             Contact.OPPONENT_KING
                         } else {
                             moves.add(it)
                             Contact.OPPONENT_NON_KING
                         }
+                    } else {
+                        // do nothing
                     }
                 }
             } while (square != null && contact == Contact.NONE)
